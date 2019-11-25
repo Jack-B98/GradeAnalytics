@@ -25,18 +25,17 @@ public class WorkGUI
 
 	protected Shell shell;
 	private Text text;
-	private Button btnDeleteValue;
+	private Button deleteData;
 	private Text text_1;
-	private Button btnSetBounds;
-	private Text text_2;
-	private Text text_3;
-	private Button btnLoadFromFile;
-	private Text text_4;
-	private Button btnAppendFrom;
-	private Text text_5;
-	private Text text_6;
+	private Button setBounds;
+	private Text lowBound;
+	private Text highBound;
+	private Button loadData;
+	private Text fileToLoad;
+	private Button appendData;
+	private Text fileToAppend;
+	private Text trackErrors;
 	
-	private InputStreamReader newIn;
 	private BufferedReader scan;
 
 	/**
@@ -80,64 +79,105 @@ public class WorkGUI
 	{
 		shell = new Shell();
 		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
-		shell.setSize(870, 568);
+		shell.setSize(1122, 737);
 		shell.setText("SWT Application");
 		
-		Button btnAddValue = new Button(shell, SWT.NONE);
-		btnAddValue.setBounds(20, 46, 94, 27);
-		btnAddValue.setText("Add Value");
+		Button addData = new Button(shell, SWT.NONE);
+		addData.setBounds(20, 46, 94, 27);
+		addData.setText("Add Value");
 		
 		text = new Text(shell, SWT.BORDER);
 		text.setBounds(20, 21, 94, 19);
 		
-		btnDeleteValue = new Button(shell, SWT.NONE);
-		btnDeleteValue.setBounds(138, 46, 107, 27);
-		btnDeleteValue.setText("Delete Value");
+		deleteData = new Button(shell, SWT.NONE);
+		deleteData.setBounds(138, 46, 107, 27);
+		deleteData.setText("Delete Value");
 		
 		text_1 = new Text(shell, SWT.BORDER);
 		text_1.setBounds(138, 21, 94, 19);
 		
-		btnSetBounds = new Button(shell, SWT.NONE);
-		btnSetBounds.setBounds(261, 46, 124, 27);
-		btnSetBounds.setText("Set Bounds");
+		setBounds = new Button(shell, SWT.NONE);
+		setBounds.setBounds(261, 46, 124, 27);
+		setBounds.setText("Set Bounds");
 		
-		text_2 = new Text(shell, SWT.BORDER);
-		text_2.setBounds(251, 21, 72, 19);
+		lowBound = new Text(shell, SWT.BORDER);
+		lowBound.setBounds(251, 21, 72, 19);
 		
-		text_3 = new Text(shell, SWT.BORDER);
-		text_3.setBounds(329, 21, 72, 19);
+		highBound = new Text(shell, SWT.BORDER);
+		highBound.setBounds(329, 21, 72, 19);
 		
-		btnLoadFromFile = new Button(shell, SWT.NONE);
-		btnLoadFromFile.setBounds(20, 142, 112, 27);
-		btnLoadFromFile.setText("Load from File");
-		
-		text_4 = new Text(shell, SWT.BORDER);
-		text_4.setBounds(20, 117, 107, 19);
-		
-		btnAppendFrom = new Button(shell, SWT.NONE);
-		btnAppendFrom.addSelectionListener(new SelectionAdapter() {
+		loadData = new Button(shell, SWT.NONE);
+		loadData.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(SelectionEvent e) 
+			{
+				String findFile = fileToLoad.getText();
+				
+				try
+				{
+					int lineCount = 0;
+					scan = new BufferedReader(new FileReader(findFile));
+					
+					String content = scan.readLine();
+					
+					while (content != null)
+					{
+						lineCount++;
+						try
+						{
+							int addNum = Integer.parseInt(content);
+						}
+						catch (NumberFormatException word)
+						{
+							trackErrors.append("");
+						}
+					}
+					
+				}
+				catch (FileNotFoundException notHere)
+				{
+					trackErrors.append("File Not Found: " + findFile + " could not be found\n");
+				}
+				catch (IOException f)
+				{
+					trackErrors.append("Input Error: Something happened with the file");
+				}
+				
 			}
 		});
-		btnAppendFrom.setBounds(138, 142, 141, 27);
-		btnAppendFrom.setText(" Append from File");
+		loadData.setBounds(20, 142, 112, 27);
+		loadData.setText("Load from File");
 		
-		text_5 = new Text(shell, SWT.BORDER);
-		text_5.setBounds(138, 117, 130, 19);
+		fileToLoad = new Text(shell, SWT.BORDER);
+		fileToLoad.setBounds(20, 117, 107, 19);
 		
-		text_6 = new Text(shell, SWT.BORDER | SWT.MULTI);
-		text_6.setEditable(false);
-		text_6.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		text_6.setBounds(10, 203, 258, 285);
+		appendData = new Button(shell, SWT.NONE);
+		appendData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				
+			}
+		});
+		appendData.setBounds(138, 142, 141, 27);
+		appendData.setText(" Append from File");
+		
+		fileToAppend = new Text(shell, SWT.BORDER);
+		fileToAppend.setBounds(138, 117, 130, 19);
+		
+		trackErrors = new Text(shell, SWT.BORDER | SWT.MULTI);
+		trackErrors.setEditable(false);
+		trackErrors.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		trackErrors.setBounds(21, 179, 302, 285);
 		
 		Label lblErrorLog = new Label(shell, SWT.NONE);
 		lblErrorLog.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 16, SWT.NORMAL));
-		lblErrorLog.setBounds(104, 494, 72, 19);
+		lblErrorLog.setBounds(135, 470, 72, 19);
 		lblErrorLog.setText("Error Log");
 		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
-		canvas.setBounds(285, 79, 560, 409);
+		canvas.setBackground(SWTResourceManager.getColor(245, 222, 179));
+		canvas.setBounds(407, 21, 705, 340);
 
 	}
 }
