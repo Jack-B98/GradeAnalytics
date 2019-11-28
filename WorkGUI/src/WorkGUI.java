@@ -18,9 +18,11 @@ import org.eclipse.swt.awt.SWT_AWT;
 import java.awt.Panel;
 import java.awt.BorderLayout;
 import javax.swing.JRootPane;
+import javax.swing.JFileChooser;
 
 import java.io.*;
 import java.util.*;
+import javax.swing.JButton;
 
 public class WorkGUI
 {
@@ -44,8 +46,12 @@ public class WorkGUI
 	private int highestVal = 0;
 	private int lowestVal = 0;
 	private int mean, median, mode;
-	private ArrayList<Double> entries = new ArrayList();
+	private ArrayList<Double> entries = new ArrayList<Double>();
 	private Text dataDisp;
+	private Text text;
+	/**
+	 * @wbp.nonvisual location=329,171
+	 */
 
 	/**
 	 * Launch the application.
@@ -87,7 +93,7 @@ public class WorkGUI
 	protected void createContents()
 	{
 		shell = new Shell();
-		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
+		shell.setBackground(SWTResourceManager.getColor(160, 82, 45));
 		shell.setSize(1122, 737);
 		shell.setText("SWT Application");
 		
@@ -108,14 +114,14 @@ public class WorkGUI
 				}
 			}
 		});
-		addData.setBounds(20, 46, 94, 27);
+		addData.setBounds(10, 46, 117, 27);
 		addData.setText("Add Value");
 		
 		dataToAdd = new Text(shell, SWT.BORDER);
 		dataToAdd.setBounds(20, 21, 94, 19);
 		
 		deleteData = new Button(shell, SWT.NONE);
-		deleteData.setBounds(138, 46, 107, 27);
+		deleteData.setBounds(130, 46, 112, 27);
 		deleteData.setText("Delete Value");
 		
 		text_1 = new Text(shell, SWT.BORDER);
@@ -131,6 +137,7 @@ public class WorkGUI
 		highBound = new Text(shell, SWT.BORDER);
 		highBound.setBounds(329, 21, 72, 19);
 		
+		
 		loadData = new Button(shell, SWT.NONE);
 		loadData.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -143,20 +150,23 @@ public class WorkGUI
 					int lineCount = 0;
 					scan = new BufferedReader(new FileReader(findFile));
 					
-					String content = scan.readLine();
+					String content;
 					
-					while (content != null)
+					while ((content = scan.readLine()) != null)
 					{
 						lineCount++;
 						try
 						{
-							int addNum = Integer.parseInt(content);
+							double addNum = Integer.parseInt(content);
+							entries.add(addNum);
 						}
 						catch (NumberFormatException word)
 						{
-							trackErrors.append("Input Error File: " + "");
+							trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
 						}
 					}
+					
+					trackErrors.append("Data Successfully Loaded\n");
 					
 				}
 				catch (FileNotFoundException notHere)
@@ -165,7 +175,7 @@ public class WorkGUI
 				}
 				catch (IOException f)
 				{
-					trackErrors.append("Input Error: Something happened with the file");
+					trackErrors.append("Input Error: Something happened with the file\n");
 				}
 				
 			}
@@ -174,7 +184,7 @@ public class WorkGUI
 		loadData.setText("Load from File");
 		
 		fileToLoad = new Text(shell, SWT.BORDER);
-		fileToLoad.setBounds(20, 117, 107, 19);
+		fileToLoad.setBounds(20, 117, 112, 19);
 		
 		appendData = new Button(shell, SWT.NONE);
 		appendData.addSelectionListener(new SelectionAdapter() {
@@ -184,92 +194,109 @@ public class WorkGUI
 				
 			}
 		});
-		appendData.setBounds(138, 142, 141, 27);
+		appendData.setBounds(182, 142, 141, 27);
 		appendData.setText(" Append from File");
 		
 		fileToAppend = new Text(shell, SWT.BORDER);
-		fileToAppend.setBounds(138, 117, 130, 19);
+		fileToAppend.setBounds(182, 117, 141, 19);
 		
 		trackErrors = new Text(shell, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		trackErrors.setEditable(false);
-		trackErrors.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		trackErrors.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		trackErrors.setBounds(21, 179, 302, 397);
 		
 		Label lblErrorLog = new Label(shell, SWT.NONE);
 		lblErrorLog.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 16, SWT.NORMAL));
-		lblErrorLog.setBounds(131, 582, 72, 19);
-		lblErrorLog.setText("Error Log");
+		lblErrorLog.setBounds(123, 582, 82, 19);
+		lblErrorLog.setText("Status Log");
 		
 		Button analytics = new Button(shell, SWT.NONE);
 		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		analytics.setBounds(444, 382, 160, 37);
+		analytics.setBounds(886, 361, 160, 37);
 		analytics.setText("Analytics");
 		
 		Button dispGraph = new Button(shell, SWT.NONE);
 		dispGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		dispGraph.setBounds(685, 380, 124, 37);
+		dispGraph.setBounds(716, 636, 124, 37);
 		dispGraph.setText("Display Graph");
 		
 		Button showDist = new Button(shell, SWT.NONE);
 		showDist.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		showDist.setBounds(873, 380, 144, 37);
+		showDist.setBounds(10, 636, 144, 37);
 		showDist.setText("Show Distribution");
 		
 		Button genReport = new Button(shell, SWT.NONE);
 		genReport.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		genReport.setBounds(873, 482, 144, 37);
+		genReport.setBounds(179, 636, 144, 37);
 		genReport.setText("Generate Report");
 		
-		dataDisp = new Text(shell, SWT.BORDER | SWT.MULTI);
-		dataDisp.setBackground(SWTResourceManager.getColor(255, 239, 213));
+		dataDisp = new Text(shell, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
-		dataDisp.setBounds(426, 21, 686, 325);
+		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 95, SWT.BOLD));
+		dataDisp.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		dataDisp.setBounds(482, 21, 286, 325);
 		
-		Button btnNewButton = new Button(shell, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+		Button showData = new Button(shell, SWT.NONE);
+		showData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
-				Collections.sort(entries);
-				Collections.reverse(entries);
-				
-				int row = (int) Math.ceil(entries.size() / (double) 4);
-				
-				System.out.println(row);
-				
-				double[][] printOut = new double[row][4];
-				
-				int k = 0;
-				for (int j = 0; j < 4; j++)
+				if (entries.isEmpty())
 				{
-					for (int i = 0; i < row; i++)
-					{
-						if (k < entries.size())
-						{
-							printOut[i][j] = entries.get(k);
-							k++;
-						}
-					}
+					trackErrors.append("Display Error: There is no data to display\n");
 				}
-				
-				int z = 0;
-				for (int j = 0; j < row; j++)
+				else
 				{
-					for (int i = 0; i < 4; i++)
+					Collections.sort(entries);
+					Collections.reverse(entries);
+					
+					int row = (int) Math.ceil(entries.size() / (double) 4);
+					
+					System.out.println(row);
+					
+					double[][] printOut = new double[row][4];
+					
+					int k = 0;
+					for (int j = 0; j < 4; j++)
 					{
-						if (z < k)
+						for (int i = 0; i < row; i++)
 						{
-							dataDisp.append(Double.toString(printOut[j][i]) + " ");
+							if (k < entries.size())
+							{
+								printOut[i][j] = entries.get(k);
+								k++;
+							}
 						}
-						z++;
 					}
-					dataDisp.append("\n");
+					
+					int z = 0;
+					for (int j = 0; j < row; j++)
+					{
+						for (int i = 0; i < 4; i++)
+						{
+							if (z < k)
+							{
+								dataDisp.append(Double.toString(printOut[j][i]) + "     ");
+							}
+							z++;
+						}
+						dataDisp.append("\n");
+					}
 				}
 			}
 		});
-		btnNewButton.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		btnNewButton.setBounds(444, 482, 160, 37);
-		btnNewButton.setText("Display Data");
+		showData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
+		showData.setBounds(547, 361, 160, 37);
+		showData.setText("Display Data");
+		
+		text = new Text(shell, SWT.BORDER);
+		text.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		text.setEditable(false);
+		text.setBounds(873, 21, 189, 325);
+		
+		Canvas canvas = new Canvas(shell, SWT.NONE);
+		canvas.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		canvas.setBounds(482, 429, 579, 190);
 
 	}
 }
