@@ -116,7 +116,7 @@ public class WorkGUI
 		});
 		addData.setBounds(10, 46, 117, 27);
 		addData.setText("Add Value");
-		
+
 		dataToAdd = new Text(shell, SWT.BORDER);
 		dataToAdd.setBounds(20, 21, 94, 19);
 		
@@ -148,7 +148,9 @@ public class WorkGUI
 				try
 				{
 					int lineCount = 0;
+					int error = 0;
 					scan = new BufferedReader(new FileReader(findFile));
+					entries.clear();
 					
 					String content;
 					
@@ -162,11 +164,16 @@ public class WorkGUI
 						}
 						catch (NumberFormatException word)
 						{
+							error = 1;
 							trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
 						}
 					}
 					
-					trackErrors.append("Data Successfully Loaded\n");
+					if (error != 1)
+					{
+						trackErrors.setText("");
+					}
+					fileToLoad.setText("");
 					
 				}
 				catch (FileNotFoundException notHere)
@@ -247,12 +254,11 @@ public class WorkGUI
 				}
 				else
 				{
+					dataDisp.setText("");
 					Collections.sort(entries);
 					Collections.reverse(entries);
 					
 					int row = (int) Math.ceil(entries.size() / (double) 4);
-					
-					System.out.println(row);
 					
 					double[][] printOut = new double[row][4];
 					
