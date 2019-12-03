@@ -48,7 +48,7 @@ public class WorkGUI
 	private int mean, median, mode;
 	private ArrayList<Double> entries = new ArrayList<Double>();
 	private Text dataDisp;
-	private Text text;
+	private Text showAnalysis;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -172,44 +172,55 @@ public class WorkGUI
 			{
 				String findFile = fileToLoad.getText();
 				
-				try
+				String[] checkExt = findFile.split("\\.");
+				
+				
+				if (!checkExt[1].equals("txt") && !checkExt[1].equals("csv"))
 				{
-					int lineCount = 0;
-					int error = 0;
-					scan = new BufferedReader(new FileReader(findFile));
-					entries.clear();
-					
-					String content;
-					
-					while ((content = scan.readLine()) != null)
-					{
-						lineCount++;
-						try
-						{
-							double addNum = Integer.parseInt(content);
-							entries.add(addNum);
-						}
-						catch (NumberFormatException word)
-						{
-							error = 1;
-							trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
-						}
-					}
-					
-					if (error != 1)
-					{
-						trackErrors.setText("");
-					}
-					fileToLoad.setText("");
-					
+					trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
 				}
-				catch (FileNotFoundException notHere)
+				else
 				{
-					trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-				}
-				catch (IOException f)
-				{
-					trackErrors.append("Input Error: Something happened with the file\n");
+				
+					try
+					{
+						int lineCount = 0;
+						int error = 0;
+						scan = new BufferedReader(new FileReader(findFile));
+						entries.clear();
+						
+						String content;
+						
+						while ((content = scan.readLine()) != null)
+						{
+							lineCount++;
+							try
+							{
+								double addNum = Integer.parseInt(content);
+								entries.add(addNum);
+							}
+							catch (NumberFormatException word)
+							{
+								error = 1;
+								trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+							}
+						}
+						
+						if (error != 1)
+						{
+							trackErrors.setText("");
+						}
+						fileToLoad.setText("");
+						
+					}
+					catch (FileNotFoundException notHere)
+					{
+						trackErrors.append("File Not Found: " + findFile + " could not be found\n");
+					}
+					catch (IOException f)
+					{
+						trackErrors.append("Input Error: Something happened with the file\n");
+					}
 				}
 				
 			}
@@ -225,7 +236,50 @@ public class WorkGUI
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
+				String findFile = fileToAppend.getText();
 				
+				String[] checkExt = findFile.split("\\.");
+				
+				if (!(checkExt[1].equals("txt")) && !(checkExt[1].equals("csv")))
+				{
+					trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
+				}
+				else
+				{
+				
+					try
+					{
+						int lineCount = 0;
+						scan = new BufferedReader(new FileReader(findFile));
+						
+						String content;
+						
+						while ((content = scan.readLine()) != null)
+						{
+							lineCount++;
+							try
+							{
+								double addNum = Double.parseDouble(content);
+								entries.add(addNum);
+							}
+							catch (NumberFormatException word)
+							{
+								trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+							}
+						}
+						
+						fileToAppend.setText("");
+						
+					}
+					catch (FileNotFoundException notHere)
+					{
+						trackErrors.append("File Not Found: " + findFile + " could not be found\n");
+					}
+					catch (IOException f)
+					{
+						trackErrors.append("Input Error: Something happened with the file\n");
+					}
+				}
 			}
 		});
 		appendData.setBounds(182, 142, 141, 27);
@@ -257,8 +311,7 @@ public class WorkGUI
 				{
 					trackErrors.append("Analytics Error: There is no data to analyze\n");
 				}
-				else 
-				{
+				else {
 					int numentries = entries.size();
 					Collections.sort(entries);
 					double min = entries.get(0);
@@ -280,11 +333,56 @@ public class WorkGUI
 						int index2 = index1 - 1;
 						median = (entries.get(index1) + entries.get(index2))/2;
 					}
+					ArrayList<Double> mode = new ArrayList<Double>();
+					ArrayList<Integer> modeindex = new ArrayList<Integer>();
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (i == 0){
+							mode.add(entries.get(i));
+						}
+						else {
+							if (entries.get(i) == entries.get(i-1)){
+								mode.add(entries.get(i));
+							}
+						}
+					}
+					if (mode.size() > 1){
+						int[] modecount = new int[mode.size()]; 
+						for (int i = 0; i < mode.size(); i++){
+							for (int j = 0; j < entries.size(); j++){
+								if (mode.get(i) == entries.get(j)){
+									modecount[i] = modecount[i] + 1;
+								}
+							}
+						}
+						int maxmode = 0;
+						for(int i = 0; i < modecount.length; i++){
+							if (i == 0){
+								maxmode = modecount[i];
+								modeindex.add(i);
+							}
+							else{
+								if (modecount[i] >= maxmode){
+									maxmode = modecount[i];
+									modeindex.add(i);
+								}
+							}
+						}
 
-					dataDisp.append("\n Number of Entries: " + numentries);
-					dataDisp.append("\n Low: " + min);
-					dataDisp.append("\n High: " + max);
-					dataDisp.append("\n Median: " + median);
+					}
+					if(mode.size() > 1){
+						showAnalysis.append("\n Median(s): ");
+						for (int i = 0; i < modeindex.size(); i ++){
+							showAnalysis.append("\n" + mode.get(modeindex.get(i)));
+						}
+					}
+					else{
+						showAnalysis.append("\n No entries repeat, every entry is the median.");
+					}
+					showAnalysis.append("\n Number of Entries: " + numentries);
+					showAnalysis.append("\n Low: " + min);
+					showAnalysis.append("\n High: " + max);
+					showAnalysis.append("\n Median: " + median);
 				}
 			}
 		});
@@ -330,6 +428,14 @@ public class WorkGUI
 					
 					double[][] printOut = new double[row][4];
 					
+					for (int u = 0; u < row; u++)
+					{
+						for (int v = 0; v < 4; v++)
+						{
+							printOut[u][v] = 0.9090909111;
+						}
+					}
+					
 					int k = 0;
 					for (int j = 0; j < 4; j++)
 					{
@@ -343,16 +449,15 @@ public class WorkGUI
 						}
 					}
 					
-					int z = 0;
 					for (int j = 0; j < row; j++)
 					{
 						for (int i = 0; i < 4; i++)
 						{
-							if (z < k)
+							if (printOut[j][i] != 0.9090909111)
 							{
 								dataDisp.append(Double.toString(printOut[j][i]) + "     ");
 							}
-							z++;
+							
 						}
 						dataDisp.append("\n");
 					}
@@ -363,10 +468,10 @@ public class WorkGUI
 		showData.setBounds(547, 361, 160, 37);
 		showData.setText("Display Data");
 		
-		text = new Text(shell, SWT.BORDER);
-		text.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		text.setEditable(false);
-		text.setBounds(873, 21, 189, 325);
+		showAnalysis = new Text(shell, SWT.BORDER);
+		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showAnalysis.setEditable(false);
+		showAnalysis.setBounds(873, 21, 189, 325);
 		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.setBackground(SWTResourceManager.getColor(255, 228, 181));
