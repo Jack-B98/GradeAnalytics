@@ -268,7 +268,6 @@ public class WorkGUI
 							}
 						}
 						
-						fileToAppend.setText("");
 						
 					}
 					catch (FileNotFoundException notHere)
