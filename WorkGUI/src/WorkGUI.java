@@ -30,7 +30,7 @@ public class WorkGUI
 	protected Shell shell;
 	private Text dataToAdd;
 	private Button deleteData;
-	private Text text_1;
+	private Text dataToKill;
 	private Button setBounds;
 	private Text lowBound;
 	private Text highBound;
@@ -107,6 +107,7 @@ public class WorkGUI
 					double addOn = Double.parseDouble(dataToAdd.getText());
 					entries.add(addOn);
 					dataToAdd.setText("");
+					trackErrors.append("Data entered from KEYBOARD succesfully\n");
 				}
 				catch (NumberFormatException g)
 				{
@@ -121,11 +122,37 @@ public class WorkGUI
 		dataToAdd.setBounds(20, 21, 94, 19);
 		
 		deleteData = new Button(shell, SWT.NONE);
+		deleteData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				try
+				{
+					double erase = Double.parseDouble(dataToKill.getText());
+					
+					for (int d = 0; d < entries.size(); d++)
+					{
+						if (entries.get(d) == erase)
+						{
+							entries.remove(d);
+							d = -1;
+						}
+					}
+					
+					trackErrors.append("The entry " + erase + " was successfully removed\n");
+					deleteData.setText("");
+				}
+				catch (NumberFormatException x)
+				{
+					trackErrors.append("Conversion Error: Data to delete is NOT a number\n");
+				}
+			}
+		});
 		deleteData.setBounds(130, 46, 112, 27);
 		deleteData.setText("Delete Value");
 		
-		text_1 = new Text(shell, SWT.BORDER);
-		text_1.setBounds(138, 21, 94, 19);
+		dataToKill = new Text(shell, SWT.BORDER);
+		dataToKill.setBounds(138, 21, 94, 19);
 		
 		setBounds = new Button(shell, SWT.NONE);
 		setBounds.setBounds(261, 46, 124, 27);
@@ -221,6 +248,47 @@ public class WorkGUI
 		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		analytics.setBounds(886, 361, 160, 37);
 		analytics.setText("Analytics");
+		
+		analytics.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				if (entries.isEmpty())
+				{
+					trackErrors.append("Analytics Error: There is no data to analyze\n");
+				}
+				else 
+				{
+					int numentries = entries.size();
+					Collections.sort(entries);
+					double min = entries.get(0);
+					Collections.reverse(entries);
+					double max = entries.get(0);
+					double sum = 0;
+					for (int i = 0; i < entries.size(); i++){
+						sum = sum + entries.get(i);
+					}
+					double mean = sum/entries.size();
+					Collections.sort(entries);
+					double median;
+					if (entries.size()%2 != 0){
+						int index = entries.size()/2;
+						median = entries.get(index);
+					}
+					else{
+						int index1 = entries.size()/2;
+						int index2 = index1 - 1;
+						median = (entries.get(index1) + entries.get(index2))/2;
+					}
+
+					dataDisp.append("\n Number of Entries: " + numentries);
+					dataDisp.append("\n Low: " + min);
+					dataDisp.append("\n High: " + max);
+					dataDisp.append("\n Median: " + median);
+				}
+			}
+		});
+		
 		
 		Button dispGraph = new Button(shell, SWT.NONE);
 		dispGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
