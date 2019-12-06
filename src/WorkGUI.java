@@ -49,7 +49,6 @@ public class WorkGUI
 	private ArrayList<Double> entries = new ArrayList<Double>();
 	private Text dataDisp;
 	private Text showAnalysis;
-	private Text text;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -175,105 +174,114 @@ public class WorkGUI
 				
 				String[] checkExt = findFile.split("\\.");
 				
-				
-				if (!checkExt[1].equals("txt") && !checkExt[1].equals("csv"))
-				{
-					trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
-				}
-				else if (checkExt[1].equals("csv"))
+				if(!findFile.isEmpty())
 				{
 					try
 					{
-						int lineCount = 0;
-						int error = 0;
-						File newF = new File(findFile);
-						Scanner track = new Scanner(newF);
-						//scan = new BufferedReader(new FileReader(findFile));
-						entries.clear();
-						
-						//String content;
-						
-						while (track.hasNext())
+						if (!checkExt[1].equals("txt") && !checkExt[1].equals("csv"))
 						{
-							lineCount++;
+							trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
+						}
+						else if (checkExt[1].equals("csv"))
+						{
 							try
 							{
-								String[] commaDel = track.nextLine().split(",");
-								
-								for (int iter = 0; iter < commaDel.length; iter++)
+								int lineCount = 0;
+								int error = 0;
+								File newF = new File(findFile);
+								Scanner track = new Scanner(newF);
+								//scan = new BufferedReader(new FileReader(findFile));
+								entries.clear();
+
+								//String content;
+
+								while (track.hasNext())
 								{
-									double addNum = Double.parseDouble(commaDel[iter]);
-									entries.add(addNum);
+									lineCount++;
+									try
+									{
+										String[] commaDel = track.nextLine().split(",");
+
+										for (int iter = 0; iter < commaDel.length; iter++)
+										{
+											double addNum = Double.parseDouble(commaDel[iter]);
+											entries.add(addNum);
+										}
+									}
+									catch (NumberFormatException word)
+									{
+										error = 1;
+										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+									}
 								}
+
+								if (error != 1)
+								{
+									trackErrors.setText("");
+								}
+								fileToLoad.setText("");
+								track.close();
+
 							}
-							catch (NumberFormatException word)
+							catch (FileNotFoundException notHere)
 							{
-								error = 1;
-								trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
 							}
+							/*catch (IOException f)
+							{
+								trackErrors.append("Input Error: Something happened with the file\n");
+							}*/
 						}
-						
-						if (error != 1)
+						else
 						{
-							trackErrors.setText("");
-						}
-						fileToLoad.setText("");
-						track.close();
 						
-					}
-					catch (FileNotFoundException notHere)
-					{
-						trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-					}
-					/*catch (IOException f)
-					{
-						trackErrors.append("Input Error: Something happened with the file\n");
-					}*/
-				}
-				else
-				{
-				
-					try
-					{
-						int lineCount = 0;
-						int error = 0;
-						scan = new BufferedReader(new FileReader(findFile));
-						entries.clear();
-						
-						String content;
-						
-						while ((content = scan.readLine()) != null)
-						{
-							lineCount++;
 							try
 							{
-								double addNum = Integer.parseInt(content);
-								entries.add(addNum);
+								int lineCount = 0;
+								int error = 0;
+								scan = new BufferedReader(new FileReader(findFile));
+								entries.clear();
+								
+								String content;
+								
+								while ((content = scan.readLine()) != null)
+								{
+									lineCount++;
+									try
+									{
+										double addNum = Integer.parseInt(content);
+										entries.add(addNum);
+									}
+									catch (NumberFormatException word)
+									{
+										error = 1;
+										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+									}
+								}
+								
+								if (error != 1)
+								{
+									trackErrors.setText("");
+								}
+								fileToLoad.setText("");
+								
 							}
-							catch (NumberFormatException word)
+							catch (FileNotFoundException notHere)
 							{
-								error = 1;
-								trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
+							}
+							catch (IOException f)
+							{
+								trackErrors.append("Input Error: Something happened with the file\n");
 							}
 						}
 						
-						if (error != 1)
-						{
-							trackErrors.setText("");
-						}
-						fileToLoad.setText("");
-						
 					}
-					catch (FileNotFoundException notHere)
+					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-					}
-					catch (IOException f)
-					{
-						trackErrors.append("Input Error: Something happened with the file\n");
+						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
 					}
 				}
-				
 			}
 		});
 		loadData.setBounds(20, 142, 112, 27);
@@ -291,44 +299,54 @@ public class WorkGUI
 				
 				String[] checkExt = findFile.split("\\.");
 				
-				if (!(checkExt[1].equals("txt")) && !(checkExt[1].equals("csv")))
+				if(!findFile.isEmpty())
 				{
-					trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
-				}
-				else
-				{
-				
 					try
 					{
-						int lineCount = 0;
-						scan = new BufferedReader(new FileReader(findFile));
-						
-						String content;
-						
-						while ((content = scan.readLine()) != null)
+						if (!(checkExt[1].equals("txt")) && !(checkExt[1].equals("csv")))
 						{
-							lineCount++;
+							trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
+						}
+						else
+						{
+						
 							try
 							{
-								double addNum = Double.parseDouble(content);
-								entries.add(addNum);
+								int lineCount = 0;
+								scan = new BufferedReader(new FileReader(findFile));
+								
+								String content;
+								
+								while ((content = scan.readLine()) != null)
+								{
+									lineCount++;
+									try
+									{
+										double addNum = Double.parseDouble(content);
+										entries.add(addNum);
+									}
+									catch (NumberFormatException word)
+									{
+										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+									}
+								}
+								
+								fileToAppend.setText("");
+								
 							}
-							catch (NumberFormatException word)
+							catch (FileNotFoundException notHere)
 							{
-								trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
+								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
+							}
+							catch (IOException f)
+							{
+								trackErrors.append("Input Error: Something happened with the file\n");
 							}
 						}
-						
-						fileToAppend.setText("");
-						
 					}
-					catch (FileNotFoundException notHere)
+					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-					}
-					catch (IOException f)
-					{
-						trackErrors.append("Input Error: Something happened with the file\n");
+						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
 					}
 				}
 			}
@@ -525,8 +543,8 @@ public class WorkGUI
 		showAnalysis.setEditable(false);
 		showAnalysis.setBounds(841, 21, 219, 325);
 		
-		text = new Text(shlGradeAnalyzer, SWT.BORDER);
-		text.setEditable(false);
+		Text text = new Text(shlGradeAnalyzer, SWT.BORDER);
+		text.setEditable(false);	
 		text.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		text.setBounds(441, 404, 652, 245);
 
