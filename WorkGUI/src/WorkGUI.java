@@ -353,7 +353,6 @@ public class WorkGUI
 		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		analytics.setBounds(874, 361, 160, 37);
 		analytics.setText("Analytics");
-		
 		analytics.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -363,6 +362,7 @@ public class WorkGUI
 					trackErrors.append("Analytics Error: There is no data to analyze\n");
 				}
 				else {
+					showAnalysis.setText("");
 					int numentries = entries.size();
 					Collections.sort(entries);
 					double min = entries.get(0);
@@ -385,50 +385,64 @@ public class WorkGUI
 						median = (entries.get(index1) + entries.get(index2))/2;
 					}
 					ArrayList<Double> mode = new ArrayList<Double>();
-					ArrayList<Integer> modeindex = new ArrayList<Integer>();
 					Collections.sort(entries);
-					for (int i = 0; i < entries.size(); i ++){
-						if (i == 0){
-							mode.add(entries.get(i));
-						}
-						else {
-							if (entries.get(i) == entries.get(i-1)){
+					
+					for (int fuh = 0; fuh < entries.size(); fuh++)
+					{
+						System.out.print(entries.get(fuh) + " ");
+					}
+					System.out.print("\n");
+					
+					for (int i = 1; i < entries.size(); i++){
+						
+							if (entries.get(i).compareTo(entries.get(i-1)) == 0){
 								mode.add(entries.get(i));
 							}
-						}
+						
 					}
-					if (mode.size() > 1){
+					System.out.println("List Size: " + mode.size());
+					ArrayList<Integer> modeindex = new ArrayList<Integer>();
+					if (mode.size() > 0){
 						int[] modecount = new int[mode.size()]; 
 						for (int i = 0; i < mode.size(); i++){
 							for (int j = 0; j < entries.size(); j++){
-								if (mode.get(i) == entries.get(j)){
+								if (mode.get(i).compareTo(entries.get(j)) == 0){
 									modecount[i] = modecount[i] + 1;
 								}
 							}
 						}
 						int maxmode = 0;
 						for(int i = 0; i < modecount.length; i++){
-							if (i == 0){
-								maxmode = modecount[i];
-								modeindex.add(i);
-							}
-							else{
+							
 								if (modecount[i] >= maxmode){
 									maxmode = modecount[i];
 									modeindex.add(i);
 								}
-							}
+							
 						}
+						//commit comment
 
 					}
-					if(mode.size() > 1){
-						showAnalysis.append("\n Median(s): ");
-						for (int i = 0; i < modeindex.size(); i ++){
-							showAnalysis.append("\n" + mode.get(modeindex.get(i)));
+					ArrayList<Double> printmode = new ArrayList<Double>();
+					for (int i = 0; i < modeindex.size(); i++) {
+						boolean found = false;
+						for (int j = 0; j < printmode.size(); j ++) {
+							if (mode.get(modeindex.get(i)).compareTo(printmode.get(j)) == 0) {
+								found = true;
+							}
+						}
+						if (found == false) {
+							printmode.add(mode.get(modeindex.get(i)));
+						}
+					}
+					if(printmode.size() > 0){
+						showAnalysis.append("\n Mode(s): ");
+						for (int i = 0; i < printmode.size(); i ++){
+							showAnalysis.append("\n" + printmode.get(i));
 						}
 					}
 					else{
-						showAnalysis.append("\n No entries repeat, every entry is the median.");
+						showAnalysis.append("\n No entries repeat, every entry is the mode.");
 					}
 					showAnalysis.append("\n Number of Entries: " + numentries);
 					showAnalysis.append("\n Low: " + min);
@@ -437,6 +451,7 @@ public class WorkGUI
 				}
 			}
 		});
+		
 		
 		
 		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
