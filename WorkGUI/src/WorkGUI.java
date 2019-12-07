@@ -345,7 +345,7 @@ public class WorkGUI
 					for (int i = 0; i < entries.size(); i++){
 						sum = sum + entries.get(i);
 					}
-					//change
+					//change again
 					double mean = sum/entries.size();
 					Collections.sort(entries);
 					double median;
