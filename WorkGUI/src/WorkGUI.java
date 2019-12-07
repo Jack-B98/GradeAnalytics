@@ -204,10 +204,11 @@ public class WorkGUI
 		
 		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		lowBound.setBounds(251, 21, 72, 19);
+		lowBound.setText("0");
 		
 		highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		highBound.setBounds(329, 21, 72, 19);
-		
+		highBound.setText("100");
 		
 		loadData = new Button(shlGradeAnalyzer, SWT.NONE);
 		loadData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
@@ -638,7 +639,7 @@ public class WorkGUI
 
 				}
 				else {
-					showAnalysis.setText("");
+					
 					
 					Collections.sort(entries);
 					for (int i = 0; i < entries.size(); i ++){
