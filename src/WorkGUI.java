@@ -148,6 +148,7 @@ public class WorkGUI
 					{
 						if (entries.get(d) == erase)
 						{
+							//TODO: This is only supposed to delete the first instance of the value and thats all
 							entries.remove(d);
 							d = entries.size();
 						}
@@ -264,7 +265,8 @@ public class WorkGUI
 										for (int iter = 0; iter < commaDel.length; iter++)
 										{
 											float addNum = Float.parseFloat(commaDel[iter]);
-											entries.add(addNum);
+											if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+												entries.add(addNum);
 										}
 									}
 									catch (NumberFormatException word)
@@ -310,7 +312,8 @@ public class WorkGUI
 									try
 									{
 										float addNum = Integer.parseInt(content);
-										entries.add(addNum);
+										if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+											entries.add(addNum);
 									}
 									catch (NumberFormatException word)
 									{
@@ -388,7 +391,8 @@ public class WorkGUI
 									try
 									{
 										float addNum = Float.parseFloat(content);
-										entries.add(addNum);
+										if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+											entries.add(addNum);
 									}
 									catch (NumberFormatException word)
 									{
