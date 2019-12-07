@@ -40,6 +40,7 @@ public class WorkGUI
 	private ArrayList<Float> entries = new ArrayList<Float>();
 	private Text dataDisp;
 	private Text showAnalysis;
+	private Text showGraph;
 	private float lowBoundVal = 0f;
 	private float highBoundVal = 100f;
 	/**
@@ -215,230 +216,170 @@ public class WorkGUI
 		setBounds.setBounds(261, 46, 124, 27);
 		setBounds.setText("Set Bounds");
 		
-		//Moved the text box blocks above their button blocks in the code for visual clarity
-		Text fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
-		fileToLoad.setBounds(20, 117, 112, 19);
-		
 		Button loadData = new Button(shlGradeAnalyzer, SWT.NONE);
 		loadData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
-				String findFile = fileToLoad.getText();
+				String[] exts = {"*.txt" , "*.csv"};
+				FileDialog dialog = new FileDialog(shlGradeAnalyzer, SWT.NULL);
+				dialog.setFilterExtensions(exts);
+	  			String location = dialog.open();
+	  			
+	  			if (location != null) 
+	  			{
+		  			File input = new File(location);
+		  			if (input.isFile())
+		  			{
+		  				entries.clear();
+		  				int error = 0;
+		  				try
+		  				{
+		  					Scanner track = new Scanner(input);
+		  					
+		  					while (track.hasNext())
+		  					{
+		  						try
+		  						{
+		  							String content = track.nextLine();
+		  							
+		  							if (content.contains(","))
+		  							{
+		  								String[] comSplit = content.split(",");
+		  								
+		  								
+		  								for (int j = 0; j < comSplit.length; j++)
+		  								{
+		  									
+		  								}
+		  							}
+		  							else
+		  							{
+		  								float addNum = Float.parseFloat(content);
+		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+		  									entries.add(addNum);
+		  							}
+		  							
+		  						}
+		  						catch (NumberFormatException xz)
+		  						{
+		  							error = 1;
+		  							trackErrors.append("Input Error: Some of the data entered was NOT a number\n");
+		  						}
+		  					}
+		  					
+		  					if (error != 1)
+		  					{
+		  						trackErrors.setText("");
+		  					}
+		  					track.close();
+		  				}
+		  				catch (FileNotFoundException eff)
+		  				{
+		  					trackErrors.append("File Error: The file could not be found\n");
+		  				}
+		  			}
+		  			else
+		  			{
+		 				System.out.print("File is NOT there\n");
+		  			}
+
+	  			}
 				
-				String[] checkExt = findFile.split("\\.");
 				
-				if(!findFile.isEmpty())
-				{
-					try
-					{
-						if (!checkExt[1].equals("txt") && !checkExt[1].equals("csv"))
-						{
-							trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
-						}
-						else if (checkExt[1].equals("csv"))
-						{
-							try
-							{
-								int lineCount = 0;
-								int error = 0;
-								File newF = new File(findFile);
-								Scanner track = new Scanner(newF);
-								//scan = new BufferedReader(new FileReader(findFile));
-								entries.clear();
-
-								//String content;
-
-								while (track.hasNext())
-								{
-									lineCount++;
-									try
-									{
-										String[] commaDel = track.nextLine().split(",");
-
-										for (int iter = 0; iter < commaDel.length; iter++)
-										{
-											float addNum = Float.parseFloat(commaDel[iter]);
-											if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
-												entries.add(addNum);
-										}
-									}
-									catch (NumberFormatException word)
-									{
-										error = 1;
-										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
-									}
-								}
-
-								if (error != 1)
-								{
-									//TODO: Not sure what this is for, not sure what error is used for either
-									trackErrors.setText("");
-								}
-								fileToLoad.setText("");
-								track.close();
-
-							}
-							catch (FileNotFoundException notHere)
-							{
-								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-							}
-							/*catch (IOException f)
-							{
-								trackErrors.append("Input Error: Something happened with the file\n");
-							}*/
-						}
-						else
-						{
-						
-							try
-							{
-								int lineCount = 0;
-								int error = 0;
-								scan = new BufferedReader(new FileReader(findFile));
-								entries.clear();
-								
-								String content;
-								
-								while ((content = scan.readLine()) != null)
-								{
-									lineCount++;
-									try
-									{
-										float addNum = Integer.parseInt(content);
-										if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
-											entries.add(addNum);
-									}
-									catch (NumberFormatException word)
-									{
-										error = 1;
-										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
-									}
-								}
-								
-								if (error != 1)
-								{
-									//TODO: Again not sure what this is
-									trackErrors.setText("");
-								}
-								fileToLoad.setText("");
-								
-							}
-							catch (FileNotFoundException notHere)
-							{
-								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-							}
-							catch (IOException f)
-							{
-								trackErrors.append("Input Error: Something happened with the file\n");
-							}
-						}
-						
-					}
-					catch (ArrayIndexOutOfBoundsException missingExtension)
-					{
-						trackErrors.append("Missing File Extension: Please make sure to include\nthe .txt or .csv at the end of your file name\n");
-					}
-				}
-				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the\ntext box before trying to load it\n");
-				}
 			}
 		});
-		loadData.setBounds(20, 142, 112, 27);
+		loadData.setBounds(20, 546, 141, 37);
 		loadData.setText("Load from File");
-		
-		//Moved the text box blocks above their button blocks in the code for visual clarity
-		Text fileToAppend = new Text(shlGradeAnalyzer, SWT.BORDER);
-		fileToAppend.setBounds(182, 117, 141, 19);
 		
 		Button appendData = new Button(shlGradeAnalyzer, SWT.NONE);
 		appendData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
-				String findFile = fileToAppend.getText();
-				
-				String[] checkExt = findFile.split("\\.");
-				
-				if(!findFile.isEmpty())
-				{
-					try
-					{
-						if (!(checkExt[1].equals("txt")) && !(checkExt[1].equals("csv")))
-						{
-							trackErrors.append("Invalid File Type: Must be either .txt or .csv file\n");
-						}
-						else
-						{
-						
-							try
-							{
-								int lineCount = 0;
-								scan = new BufferedReader(new FileReader(findFile));
-								
-								String content;
-								
-								while ((content = scan.readLine()) != null)
-								{
-									lineCount++;
-									try
-									{
-										float addNum = Float.parseFloat(content);
-										if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
-											entries.add(addNum);
-									}
-									catch (NumberFormatException word)
-									{
-										trackErrors.append("Input Error File, Line " + lineCount + ": The data is NOT a number\n");
-									}
-								}
-								
-								fileToAppend.setText("");
-								
-							}
-							catch (FileNotFoundException notHere)
-							{
-								trackErrors.append("File Not Found: " + findFile + " could not be found\n");
-							}
-							catch (IOException f)
-							{
-								trackErrors.append("Input Error: Something happened with the file\n");
-							}
-						}
-					}
-					catch (ArrayIndexOutOfBoundsException missingExtension)
-					{
-						trackErrors.append("Missing File Extension: Please make sure to include\nthe .txt or .csv at the end of your file name\n");
-					}
-				}
-				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the\ntext box before trying to load it\n");
-				}
+				String[] exts = {"*.txt" , "*.csv"};
+				FileDialog dialog = new FileDialog(shlGradeAnalyzer, SWT.NULL);
+				dialog.setFilterExtensions(exts);
+	  			String location = dialog.open();
+	  			
+	  			if (location != null) 
+	  			{
+		  			File input = new File(location);
+		  			if (input.isFile())
+		  			{
+		  				int error = 0;
+		  				try
+		  				{
+		  					Scanner track = new Scanner(input);
+		  					
+		  					while (track.hasNext())
+		  					{
+		  						try
+		  						{
+		  							String content = track.nextLine();
+		  							
+		  							if (content.contains(","))
+		  							{
+		  								String[] comSplit = content.split(",");
+		  								
+		  								
+		  								for (int j = 0; j < comSplit.length; j++)
+		  								{
+		  									
+		  								}
+		  							}
+		  							else
+		  							{
+		  								float addNum = Float.parseFloat(content);
+		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+		  									entries.add(addNum);
+		  							}
+		  							
+		  						}
+		  						catch (NumberFormatException xz)
+		  						{
+		  							error = 1;
+		  							trackErrors.append("Input Error: Some of the data entered was NOT a number\n");
+		  						}
+		  					}
+		  					
+		  					if (error != 1)
+		  					{
+		  						trackErrors.setText("");
+		  					}
+		  					track.close();
+		  				}
+		  				catch (FileNotFoundException eff)
+		  				{
+		  					trackErrors.append("File Error: The file could not be found\n");
+		  				}
+		  			}
+		  			else
+		  			{
+		 				System.out.print("File is NOT there\n");
+		  			}
+	  			}
 			}
 		});
-		appendData.setBounds(182, 142, 141, 27);
+		appendData.setBounds(196, 546, 141, 37);
 		appendData.setText(" Append from File");
 		
 		Text trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		trackErrors.setEditable(false);
 		trackErrors.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		trackErrors.setBounds(21, 179, 302, 397);
+		trackErrors.setBounds(21, 85, 323, 414);
 		
 		Label lblErrorLog = new Label(shlGradeAnalyzer, SWT.NONE);
-		lblErrorLog.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 16, SWT.NORMAL));
-		lblErrorLog.setBounds(123, 582, 82, 19);
-		lblErrorLog.setText("Status Log");
+		lblErrorLog.setBounds(130, 510, 82, 19);
+		lblErrorLog.setText("Error Log");
 		
 		Text showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER);
 		showAnalysis.setEditable(false);
-		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 11, SWT.NORMAL));
 		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		showAnalysis.setBounds(841, 21, 219, 325);
+		showAnalysis.setBounds(778, 21, 294, 325);
 		
 		Button analytics = new Button(shlGradeAnalyzer, SWT.NONE);
-		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		analytics.setBounds(874, 361, 160, 37);
+		analytics.setBounds(922, 361, 160, 37);
 		analytics.setText("Analytics");
 		analytics.addSelectionListener(new SelectionAdapter(){
 			@Override
@@ -525,25 +466,304 @@ public class WorkGUI
 		});
 		
 		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
-		dispGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		dispGraph.setBounds(714, 655, 124, 37);
 		dispGraph.setText("Display Graph");
+		dispGraph.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				int count10 = 0;
+				int count20 = 0;
+				int count30 = 0;
+				int count40 = 0;
+				int count50 = 0;
+				int count60 = 0;
+				int count70 = 0;
+				int count80 = 0;
+				int count90 = 0;
+				int count100 = 0;
+
+				Collections.sort(entries);
+				for (int i = 0; i < entries.size(); i ++){
+					if (entries.get(i).compareTo(10.0f) <= 0f){
+						count10++;
+					}
+					else if (entries.get(i).compareTo(20.0f) <= 0f){
+						count20++;
+					}
+					else if (entries.get(i).compareTo(30.0f) <= 0f){
+						count30++;
+					}
+					else if (entries.get(i).compareTo(40.0f) <= 0f){
+						count40++;
+					}
+					else if (entries.get(i).compareTo(50.0f) <= 0f){
+						count50++;
+					}
+					else if (entries.get(i).compareTo(60.0f) <= 0f){
+						count60++;
+					}
+					else if (entries.get(i).compareTo(70.0f) <= 0f){
+						count70++;
+					}
+					else if (entries.get(i).compareTo(80.0f) <= 0f){
+						count80++;
+					}
+					else if (entries.get(i).compareTo(90.0f) <= 0f){
+						count90++;
+					}
+					else if (entries.get(i).compareTo(100.0f) <= 0f){
+						count100++;
+					}
+				}
+
+				showGraph.append("\tGrade Distribution Graph: \n");
+				showGraph.append("0 - 10% :: ");
+				for (int i = 0; i < count10; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("10 - 20% :: ");
+				for (int i = 0; i < count20; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("20 - 30% :: ");
+				for (int i = 0; i < count30; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("30 - 40% :: ");
+				for (int i = 0; i < count40; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("40 - 50% :: ");
+				for (int i = 0; i < count50; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("50 - 60% :: ");
+				for (int i = 0; i < count60; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("60 - 70% :: ");
+				for (int i = 0; i < count70; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("70 - 80% :: ");
+				for (int i = 0; i < count80; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("80 - 90% :: ");
+				for (int i = 0; i < count90; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+				showGraph.append("90 - 100% :: ");
+				for (int i = 0; i < count100; i ++){
+					showGraph.append("#");
+				}
+				showGraph.append("\n");
+			}
+		});
 		
 		Button showDist = new Button(shlGradeAnalyzer, SWT.NONE);
-		showDist.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		showDist.setBounds(10, 636, 144, 37);
+		showDist.setBounds(767, 361, 144, 37);
 		showDist.setText("Show Distribution");
+		showDist.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+
+				double total = entries.size();
+
+				double less0Prec = 0;
+				double sum0 = 0;
+				double tenPrec = 0;
+				double sum1 = 0;
+				double twtyPrec = 0;
+				double sum2 = 0;
+				double tirtPrec = 0;
+				double sum3 = 0;
+				double fourtPrec = 0;
+				double sum4 = 0;
+				double fiftPrec = 0;
+				double sum5 = 0;
+				double sixPrec = 0;
+				double sum6 = 0;
+				double sevenPrec = 0;
+				double sum7 = 0;
+				double eightyPrec = 0;
+				double sum8 = 0;
+				double ninePrec = 0;
+				double sum9 = 0;
+				double above100Prec = 0;
+				double sum10 = 0;
+				if (entries.isEmpty())
+
+				{
+
+					trackErrors.append("Analytics Error: There is no data to analyze\n");
+
+				}
+				else {
+					
+				Collections.sort(entries);
+				for (int i = 0; i < entries.size(); i ++){
+					if (entries.get(i).compareTo(10.0f) <= 0f){
+						sum1 = sum1 + entries.get(i);
+						tenPrec++;
+					}
+					else if (entries.get(i).compareTo(20.0f) <= 0f){
+						sum2 = sum2 + entries.get(i);
+						twtyPrec++;
+					}
+					else if (entries.get(i).compareTo(30.0f) <= 0f){
+						sum3 = sum3 + entries.get(i);
+						tirtPrec++;
+					}
+					else if (entries.get(i).compareTo(40.0f) <= 0f){
+						sum4 = sum4 + entries.get(i);
+						fourtPrec++;
+					}
+					else if (entries.get(i).compareTo(50.0f) <= 0f){
+						sum5 = sum5 + entries.get(i);
+						fiftPrec++;
+					}
+					else if (entries.get(i).compareTo(60.0f) <= 0f){
+						sum6 = sum6 + entries.get(i);
+						sixPrec++;
+					}
+					else if (entries.get(i).compareTo(70.0f) <= 0f){
+						sum7 = sum7 + entries.get(i);
+						sevenPrec++;
+					}
+					else if (entries.get(i).compareTo(80.0f) <= 0f){
+						sum8 = sum8 + entries.get(i);
+						eightyPrec++;
+					}
+					else if (entries.get(i).compareTo(90.0f) <= 0f){
+						sum9 = sum9 + entries.get(i);
+						ninePrec++;
+
+					}
+					else if (entries.get(i).compareTo(100.0f) <= 0f){
+						sum10 = sum10 + entries.get(i);
+						above100Prec++;
+					}
+				}
+			}
+
+				double lessZero = (sum0/less0Prec);
+				if (sum0 == 0){
+					showAnalysis.append("There are no entries less than 0 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
+				}
+
+				
+
+				double ten = (sum1/tenPrec);
+				if (sum1 == 0){
+					showAnalysis.append("There are no entries between 0 and 10 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
+				}
+
+				
+
+				double twenty = (sum2/twtyPrec);
+				if (sum2 == 0){
+					showAnalysis.append("There are no entries between 10 and 20 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
+				}
+
+				double thirty = (sum3/tirtPrec);
+				if (sum3 == 0){
+					showAnalysis.append("There are no entries between 20 and 30 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
+				}
+				
+
+				double forty = (sum4/fourtPrec);
+				if (sum4 == 0){
+					showAnalysis.append("There are no entries between 30 and 40 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
+				}
+
+				double fifty = (sum5/fiftPrec);
+				if (sum5 == 0){
+					showAnalysis.append("There are no entries between 40 and 50 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
+				}
+
+				double sixty = (sum6/sixPrec);
+				if (sum6 == 0){
+					showAnalysis.append("There are no entries between 50 and 60 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
+				}
+				
+
+				double seventy = (sum7/sevenPrec);
+				if (sum7 == 0){
+					showAnalysis.append("There are no entries between 60 and 70 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
+				}
+				
+
+				double eighty = (sum8/eightyPrec);
+				if (sum8 == 0){
+					showAnalysis.append("There are no entries between 70 and 80 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
+				}
+
+				double ninty = (sum9/ninePrec);
+				if (sum9 == 0){
+					showAnalysis.append("There are no entries between 80 and 90 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
+				}
+
+				double hundredMore = (sum10/above100Prec);
+				if (sum10 == 0){
+					showAnalysis.append("There are no entries between 90 and 100 %\n");
+				}
+				else {
+					showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
+				}
+			}
+
+		});
 		
 		Button genReport = new Button(shlGradeAnalyzer, SWT.NONE);
-		genReport.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
-		genReport.setBounds(179, 636, 144, 37);
+		genReport.setBounds(109, 612, 144, 37);
 		genReport.setText("Generate Report");
 		
 		Text dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
-		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 18, SWT.BOLD));
 		dataDisp.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		dataDisp.setBounds(482, 21, 271, 325);
+		dataDisp.setBounds(467, 21, 271, 325);
 		
 		Button showData = new Button(shlGradeAnalyzer, SWT.NONE);
 		showData.addSelectionListener(new SelectionAdapter() {
@@ -600,7 +820,6 @@ public class WorkGUI
 				}
 			}
 		});
-		showData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		showData.setBounds(535, 361, 160, 37);
 		showData.setText("Display Data");
 		
