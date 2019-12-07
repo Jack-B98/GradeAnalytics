@@ -86,6 +86,7 @@ public class WorkGUI
 	 */
 	protected void createContents()
 	{
+		
 		shlGradeAnalyzer = new Shell();
 		shlGradeAnalyzer.setBackground(SWTResourceManager.getColor(160, 82, 45));
 		shlGradeAnalyzer.setSize(1122, 737);
@@ -481,112 +482,6 @@ public class WorkGUI
 			}
 		});
 		
-		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
-		dispGraph.setBounds(714, 655, 124, 37);
-		dispGraph.setText("Display Graph");
-		dispGraph.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) 
-			{
-				int count10 = 0;
-				int count20 = 0;
-				int count30 = 0;
-				int count40 = 0;
-				int count50 = 0;
-				int count60 = 0;
-				int count70 = 0;
-				int count80 = 0;
-				int count90 = 0;
-				int count100 = 0;
-
-				Collections.sort(entries);
-				for (int i = 0; i < entries.size(); i ++){
-					if (entries.get(i).compareTo(10.0f) <= 0f){
-						count10++;
-					}
-					else if (entries.get(i).compareTo(20.0f) <= 0f){
-						count20++;
-					}
-					else if (entries.get(i).compareTo(30.0f) <= 0f){
-						count30++;
-					}
-					else if (entries.get(i).compareTo(40.0f) <= 0f){
-						count40++;
-					}
-					else if (entries.get(i).compareTo(50.0f) <= 0f){
-						count50++;
-					}
-					else if (entries.get(i).compareTo(60.0f) <= 0f){
-						count60++;
-					}
-					else if (entries.get(i).compareTo(70.0f) <= 0f){
-						count70++;
-					}
-					else if (entries.get(i).compareTo(80.0f) <= 0f){
-						count80++;
-					}
-					else if (entries.get(i).compareTo(90.0f) <= 0f){
-						count90++;
-					}
-					else if (entries.get(i).compareTo(100.0f) <= 0f){
-						count100++;
-					}
-				}
-
-				showGraph.append("\tGrade Distribution Graph: \n");
-				showGraph.append("0 - 10% :: ");
-				for (int i = 0; i < count10; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("10 - 20% :: ");
-				for (int i = 0; i < count20; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("20 - 30% :: ");
-				for (int i = 0; i < count30; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("30 - 40% :: ");
-				for (int i = 0; i < count40; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("40 - 50% :: ");
-				for (int i = 0; i < count50; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("50 - 60% :: ");
-				for (int i = 0; i < count60; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("60 - 70% :: ");
-				for (int i = 0; i < count70; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("70 - 80% :: ");
-				for (int i = 0; i < count80; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("80 - 90% :: ");
-				for (int i = 0; i < count90; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("90 - 100% :: ");
-				for (int i = 0; i < count100; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-			}
-		});
-		
 		Button showDist = new Button(shlGradeAnalyzer, SWT.NONE);
 		showDist.setBounds(767, 361, 144, 37);
 		showDist.setText("Show Distribution");
@@ -627,149 +522,264 @@ public class WorkGUI
 
 				}
 				else {
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (entries.get(i).compareTo(10.0f) <= 0f){
+							sum1 = sum1 + entries.get(i);
+							tenPrec++;
+						}
+						else if (entries.get(i).compareTo(20.0f) <= 0f){
+							sum2 = sum2 + entries.get(i);
+							twtyPrec++;
+						}
+						else if (entries.get(i).compareTo(30.0f) <= 0f){
+							sum3 = sum3 + entries.get(i);
+							tirtPrec++;
+						}
+						else if (entries.get(i).compareTo(40.0f) <= 0f){
+							sum4 = sum4 + entries.get(i);
+							fourtPrec++;
+						}
+						else if (entries.get(i).compareTo(50.0f) <= 0f){
+							sum5 = sum5 + entries.get(i);
+							fiftPrec++;
+						}
+						else if (entries.get(i).compareTo(60.0f) <= 0f){
+							sum6 = sum6 + entries.get(i);
+							sixPrec++;
+						}
+						else if (entries.get(i).compareTo(70.0f) <= 0f){
+							sum7 = sum7 + entries.get(i);
+							sevenPrec++;
+						}
+						else if (entries.get(i).compareTo(80.0f) <= 0f){
+							sum8 = sum8 + entries.get(i);
+							eightyPrec++;
+						}
+						else if (entries.get(i).compareTo(90.0f) <= 0f){
+							sum9 = sum9 + entries.get(i);
+							ninePrec++;
+	
+						}
+						else if (entries.get(i).compareTo(100.0f) <= 0f){
+							sum10 = sum10 + entries.get(i);
+							above100Prec++;
+						}
+					}
+
+					float lessZero = (sum0/less0Prec);
+					if (sum0 == 0){
+						showAnalysis.append("There are no entries less than 0 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
+					}
+	
 					
-				Collections.sort(entries);
-				for (int i = 0; i < entries.size(); i ++){
-					if (entries.get(i).compareTo(10.0f) <= 0f){
-						sum1 = sum1 + entries.get(i);
-						tenPrec++;
+	
+					float ten = (sum1/tenPrec);
+					if (sum1 == 0){
+						showAnalysis.append("There are no entries between 0 and 10 %\n");
 					}
-					else if (entries.get(i).compareTo(20.0f) <= 0f){
-						sum2 = sum2 + entries.get(i);
-						twtyPrec++;
+					else {
+						showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
 					}
-					else if (entries.get(i).compareTo(30.0f) <= 0f){
-						sum3 = sum3 + entries.get(i);
-						tirtPrec++;
+	
+					
+	
+					float twenty = (sum2/twtyPrec);
+					if (sum2 == 0){
+						showAnalysis.append("There are no entries between 10 and 20 %\n");
 					}
-					else if (entries.get(i).compareTo(40.0f) <= 0f){
-						sum4 = sum4 + entries.get(i);
-						fourtPrec++;
+					else {
+						showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
 					}
-					else if (entries.get(i).compareTo(50.0f) <= 0f){
-						sum5 = sum5 + entries.get(i);
-						fiftPrec++;
+	
+					float thirty = (sum3/tirtPrec);
+					if (sum3 == 0){
+						showAnalysis.append("There are no entries between 20 and 30 %\n");
 					}
-					else if (entries.get(i).compareTo(60.0f) <= 0f){
-						sum6 = sum6 + entries.get(i);
-						sixPrec++;
+					else {
+						showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
 					}
-					else if (entries.get(i).compareTo(70.0f) <= 0f){
-						sum7 = sum7 + entries.get(i);
-						sevenPrec++;
+					
+	
+					float forty = (sum4/fourtPrec);
+					if (sum4 == 0){
+						showAnalysis.append("There are no entries between 30 and 40 %\n");
 					}
-					else if (entries.get(i).compareTo(80.0f) <= 0f){
-						sum8 = sum8 + entries.get(i);
-						eightyPrec++;
+					else {
+						showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
 					}
-					else if (entries.get(i).compareTo(90.0f) <= 0f){
-						sum9 = sum9 + entries.get(i);
-						ninePrec++;
-
+	
+					float fifty = (sum5/fiftPrec);
+					if (sum5 == 0){
+						showAnalysis.append("There are no entries between 40 and 50 %\n");
 					}
-					else if (entries.get(i).compareTo(100.0f) <= 0f){
-						sum10 = sum10 + entries.get(i);
-						above100Prec++;
+					else {
+						showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
+					}
+	
+					float sixty = (sum6/sixPrec);
+					if (sum6 == 0){
+						showAnalysis.append("There are no entries between 50 and 60 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
+					}
+					
+	
+					float seventy = (sum7/sevenPrec);
+					if (sum7 == 0){
+						showAnalysis.append("There are no entries between 60 and 70 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
+					}
+					
+	
+					float eighty = (sum8/eightyPrec);
+					if (sum8 == 0){
+						showAnalysis.append("There are no entries between 70 and 80 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
+					}
+	
+					float ninty = (sum9/ninePrec);
+					if (sum9 == 0){
+						showAnalysis.append("There are no entries between 80 and 90 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
+					}
+	
+					float hundredMore = (sum10/above100Prec);
+					if (sum10 == 0){
+						showAnalysis.append("There are no entries between 90 and 100 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
 					}
 				}
 			}
 
-				float lessZero = (sum0/less0Prec);
-				if (sum0 == 0){
-					showAnalysis.append("There are no entries less than 0 %\n");
+		});
+		
+		Text showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
+		showGraph.setEditable(false);
+		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showGraph.setBounds(441, 404, 652, 245);
+		
+		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
+		dispGraph.setBounds(714, 655, 124, 37);
+		dispGraph.setText("Display Graph");
+		dispGraph.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				if(!entries.isEmpty()) {
+					int count10 = 0;
+					int count20 = 0;
+					int count30 = 0;
+					int count40 = 0;
+					int count50 = 0;
+					int count60 = 0;
+					int count70 = 0;
+					int count80 = 0;
+					int count90 = 0;
+					int count100 = 0;
+	
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (entries.get(i).compareTo(10.0f) <= 0f){
+							count10++;
+						}
+						else if (entries.get(i).compareTo(20.0f) <= 0f){
+							count20++;
+						}
+						else if (entries.get(i).compareTo(30.0f) <= 0f){
+							count30++;
+						}
+						else if (entries.get(i).compareTo(40.0f) <= 0f){
+							count40++;
+						}
+						else if (entries.get(i).compareTo(50.0f) <= 0f){
+							count50++;
+						}
+						else if (entries.get(i).compareTo(60.0f) <= 0f){
+							count60++;
+						}
+						else if (entries.get(i).compareTo(70.0f) <= 0f){
+							count70++;
+						}
+						else if (entries.get(i).compareTo(80.0f) <= 0f){
+							count80++;
+						}
+						else if (entries.get(i).compareTo(90.0f) <= 0f){
+							count90++;
+						}
+						else if (entries.get(i).compareTo(100.0f) <= 0f){
+							count100++;
+						}
+					}
+	
+					showGraph.append("\tGrade Distribution Graph: \n");
+					showGraph.append("0 - 10% :: ");
+					for (int i = 0; i < count10; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("10 - 20% :: ");
+					for (int i = 0; i < count20; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("20 - 30% :: ");
+					for (int i = 0; i < count30; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("30 - 40% :: ");
+					for (int i = 0; i < count40; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("40 - 50% :: ");
+					for (int i = 0; i < count50; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("50 - 60% :: ");
+					for (int i = 0; i < count60; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("60 - 70% :: ");
+					for (int i = 0; i < count70; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("70 - 80% :: ");
+					for (int i = 0; i < count80; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("80 - 90% :: ");
+					for (int i = 0; i < count90; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
+					showGraph.append("90 - 100% :: ");
+					for (int i = 0; i < count100; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
 				}
 				else {
-					showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
-				}
-
-				
-
-				float ten = (sum1/tenPrec);
-				if (sum1 == 0){
-					showAnalysis.append("There are no entries between 0 and 10 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
-				}
-
-				
-
-				float twenty = (sum2/twtyPrec);
-				if (sum2 == 0){
-					showAnalysis.append("There are no entries between 10 and 20 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
-				}
-
-				float thirty = (sum3/tirtPrec);
-				if (sum3 == 0){
-					showAnalysis.append("There are no entries between 20 and 30 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
-				}
-				
-
-				float forty = (sum4/fourtPrec);
-				if (sum4 == 0){
-					showAnalysis.append("There are no entries between 30 and 40 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
-				}
-
-				float fifty = (sum5/fiftPrec);
-				if (sum5 == 0){
-					showAnalysis.append("There are no entries between 40 and 50 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
-				}
-
-				float sixty = (sum6/sixPrec);
-				if (sum6 == 0){
-					showAnalysis.append("There are no entries between 50 and 60 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
-				}
-				
-
-				float seventy = (sum7/sevenPrec);
-				if (sum7 == 0){
-					showAnalysis.append("There are no entries between 60 and 70 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
-				}
-				
-
-				float eighty = (sum8/eightyPrec);
-				if (sum8 == 0){
-					showAnalysis.append("There are no entries between 70 and 80 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
-				}
-
-				float ninty = (sum9/ninePrec);
-				if (sum9 == 0){
-					showAnalysis.append("There are no entries between 80 and 90 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
-				}
-
-				float hundredMore = (sum10/above100Prec);
-				if (sum10 == 0){
-					showAnalysis.append("There are no entries between 90 and 100 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
+					trackErrors.append("Graph Error: There is no data to display\n");
 				}
 			}
-
 		});
 		
 		Button genReport = new Button(shlGradeAnalyzer, SWT.NONE);
@@ -838,11 +848,6 @@ public class WorkGUI
 		});
 		showData.setBounds(523, 361, 160, 37);
 		showData.setText("Display Data");
-		
-		Text showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
-		showGraph.setEditable(false);
-		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		showGraph.setBounds(441, 404, 652, 245);
 
 	}
 }
