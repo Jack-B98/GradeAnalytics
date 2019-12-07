@@ -28,19 +28,10 @@ public class WorkGUI
 {
 
 	protected Shell shlGradeAnalyzer;
-	private Text dataToAdd;
-	private Button deleteData;
-	private Text dataToKill;
-	private Button setBounds;
-	private Text lowBound;
-	private Text highBound;
-	private Button loadData;
-	private Text fileToLoad;
-	private Button appendData;
-	private Text fileToAppend;
 	private Text trackErrors;
 	
 	//Stuff for file operations and analyzing the numbers
+	//TODO: Need to have the program store the values in here instead of within the method
 	private BufferedReader scan;
 	private int numOfEntries = 0;
 	private int highestVal = 0;
@@ -100,7 +91,7 @@ public class WorkGUI
 		shlGradeAnalyzer.setText("Grade Analyzer");
 		
 		//Moved the text box blocks above their button blocks in the code for visual clarity
-		dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
 		dataToAdd.setBounds(20, 21, 94, 19);
 		
 		Button addData = new Button(shlGradeAnalyzer, SWT.NONE);
@@ -132,10 +123,10 @@ public class WorkGUI
 		addData.setText("Add Value");
 		
 		//Moved the text box blocks above their button blocks in the code for visual clarity
-		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
 		dataToKill.setBounds(138, 21, 94, 19);
 		
-		deleteData = new Button(shlGradeAnalyzer, SWT.NONE);
+		Button deleteData = new Button(shlGradeAnalyzer, SWT.NONE);
 		deleteData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -169,15 +160,15 @@ public class WorkGUI
 		deleteData.setText("Delete Value");
 		
 		//TODO: Need something to show the user the left box is the lower bound box, and the right is the upper bound box
-		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		lowBound.setBounds(251, 21, 72, 19);
 		lowBound.setText("0");
 		
-		highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		highBound.setBounds(329, 21, 72, 19);
 		highBound.setText("100");
 		
-		setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
+		Button setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
 		setBounds.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -205,19 +196,19 @@ public class WorkGUI
 							}
 						}
 						else
-							trackErrors.append("Boundary Values Error: Please make sure the lower boundary value is less than or equal to the upper boundary value\n");
+							trackErrors.append("Boundary Values Error: Please make sure the lower\nboundary value is less than or equal to the upper\nboundary value\n");
 					}
 					catch (NumberFormatException x)
 					{
-						trackErrors.append("Conversion Error: Desired boundaries must ONLY be numbers\n");
+						trackErrors.append("Conversion Error: Desired boundaries must ONLY\nbe numbers\n");
 					}
 				}
 				else {
 					if(lowBoundText.isEmpty())
-						trackErrors.append("Lower Bound Blank: Please enter a value for the lower bound before trying to set the boundaries\n");
+						trackErrors.append("Lower Bound Blank: Please enter a value for the\nlower bound before trying to set the boundaries\n");
 					
-					if(!highBoundText.isEmpty())
-						trackErrors.append("Upper Bound Blank: Please enter a value for the upper bound before trying to set the boundaries\n");
+					if(highBoundText.isEmpty())
+						trackErrors.append("Upper Bound Blank: Please enter a value for the\nupper bound before trying to set the boundaries\n");
 				}
 			}
 		});
@@ -225,10 +216,10 @@ public class WorkGUI
 		setBounds.setText("Set Bounds");
 		
 		//Moved the text box blocks above their button blocks in the code for visual clarity
-		fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
 		fileToLoad.setBounds(20, 117, 112, 19);
 		
-		loadData = new Button(shlGradeAnalyzer, SWT.NONE);
+		Button loadData = new Button(shlGradeAnalyzer, SWT.NONE);
 		loadData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -346,11 +337,11 @@ public class WorkGUI
 					}
 					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name\n");
+						trackErrors.append("Missing File Extension: Please make sure to include\nthe .txt or .csv at the end of your file name\n");
 					}
 				}
 				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it\n");
+					trackErrors.append("File Name Blank: Please enter the file's name in the\ntext box before trying to load it\n");
 				}
 			}
 		});
@@ -358,10 +349,10 @@ public class WorkGUI
 		loadData.setText("Load from File");
 		
 		//Moved the text box blocks above their button blocks in the code for visual clarity
-		fileToAppend = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text fileToAppend = new Text(shlGradeAnalyzer, SWT.BORDER);
 		fileToAppend.setBounds(182, 117, 141, 19);
 		
-		appendData = new Button(shlGradeAnalyzer, SWT.NONE);
+		Button appendData = new Button(shlGradeAnalyzer, SWT.NONE);
 		appendData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -418,18 +409,18 @@ public class WorkGUI
 					}
 					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name\n");
+						trackErrors.append("Missing File Extension: Please make sure to include\nthe .txt or .csv at the end of your file name\n");
 					}
 				}
 				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it\n");
+					trackErrors.append("File Name Blank: Please enter the file's name in the\ntext box before trying to load it\n");
 				}
 			}
 		});
 		appendData.setBounds(182, 142, 141, 27);
 		appendData.setText(" Append from File");
 		
-		trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
+		Text trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		trackErrors.setEditable(false);
 		trackErrors.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		trackErrors.setBounds(21, 179, 302, 397);
@@ -439,11 +430,16 @@ public class WorkGUI
 		lblErrorLog.setBounds(123, 582, 82, 19);
 		lblErrorLog.setText("Status Log");
 		
+		Text showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER);
+		showAnalysis.setEditable(false);
+		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 11, SWT.NORMAL));
+		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showAnalysis.setBounds(841, 21, 219, 325);
+		
 		Button analytics = new Button(shlGradeAnalyzer, SWT.NONE);
 		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		analytics.setBounds(874, 361, 160, 37);
 		analytics.setText("Analytics");
-		
 		analytics.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -543,7 +539,7 @@ public class WorkGUI
 		genReport.setBounds(179, 636, 144, 37);
 		genReport.setText("Generate Report");
 		
-		dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
+		Text dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
 		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 18, SWT.BOLD));
 		dataDisp.setBackground(SWTResourceManager.getColor(255, 228, 181));
@@ -607,12 +603,6 @@ public class WorkGUI
 		showData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		showData.setBounds(535, 361, 160, 37);
 		showData.setText("Display Data");
-		
-		showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER);
-		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 11, SWT.NORMAL));
-		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		showAnalysis.setEditable(false);
-		showAnalysis.setBounds(841, 21, 219, 325);
 		
 		Text text = new Text(shlGradeAnalyzer, SWT.BORDER);
 		text.setEditable(false);	
