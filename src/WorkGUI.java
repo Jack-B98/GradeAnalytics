@@ -46,9 +46,11 @@ public class WorkGUI
 	private int highestVal = 0;
 	private int lowestVal = 0;
 	private int mean, median, mode;
-	private ArrayList<Double> entries = new ArrayList<Double>();
+	private ArrayList<Float> entries = new ArrayList<Float>();
 	private Text dataDisp;
 	private Text showAnalysis;
+	private float lowBoundVal = 0f;
+	private float highBoundVal = 100f;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -104,9 +106,10 @@ public class WorkGUI
 			{
 				try
 				{
-					double addOn = Double.parseDouble(dataToAdd.getText());
+					float addOn = Float.parseFloat(dataToAdd.getText());
 					entries.add(addOn);
 					dataToAdd.setText("");
+					//TODO: Only need to display error message, these logs need to go into the report string
 					trackErrors.append("Data entered from KEYBOARD succesfully\n");
 				}
 				catch (NumberFormatException g)
@@ -128,7 +131,7 @@ public class WorkGUI
 			{
 				try
 				{
-					double erase = Double.parseDouble(dataToKill.getText());
+					float erase = Float.parseFloat(dataToKill.getText());
 					
 					for (int d = 0; d < entries.size(); d++)
 					{
@@ -139,6 +142,7 @@ public class WorkGUI
 						}
 					}
 					
+					//TODO: Only need to display error message, these logs need to go into the report string
 					trackErrors.append("The entry " + erase + " was successfully removed\n");
 					deleteData.setText("");
 				}
@@ -154,16 +158,55 @@ public class WorkGUI
 		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
 		dataToKill.setBounds(138, 21, 94, 19);
 		
-		setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
-		setBounds.setBounds(261, 46, 124, 27);
-		setBounds.setText("Set Bounds");
+		//TODO : Add the bounds using the low and high
+		//		- Both text boxes need to have something in them before proceeding
+		//		- Need to be numbers
+		//		- Delete/Update display to show only the values between the bounds (need
+		//			to find out if we delete or just only 'show' the values between low/high)
 		
 		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		lowBound.setBounds(251, 21, 72, 19);
+		lowBound.setText("0");
 		
 		highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		highBound.setBounds(329, 21, 72, 19);
+		highBound.setText("100");
 		
+		setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
+		setBounds.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				String lowBoundText = lowBound.getText();
+				String highBoundText = highBound.getText();
+				
+				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
+					try
+					{
+						lowBoundVal = Float.parseFloat(dataToKill.getText());
+						
+						
+					}
+					catch (NumberFormatException x)
+					{
+						trackErrors.append("Conversion Error: Desired boundaries must ONLY be numbers.\n");
+					}
+				}
+				else {
+					if(lowBoundText.isEmpty())
+						trackErrors.append("Lower Bound Blank: Please enter a value for the lower bound before trying to set the boundaries.\n");
+					
+					if(!highBoundText.isEmpty())
+						trackErrors.append("Upper Bound Blank: Please enter a value for the upper bound before trying to set the boundaries.\n");
+				}
+			}
+		});
+		setBounds.setBounds(261, 46, 124, 27);
+		setBounds.setText("Set Bounds");
+		
+		// Moved this up above the loadData block (for clarity when reading)
+		fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
+		fileToLoad.setBounds(20, 117, 112, 19);
 		
 		loadData = new Button(shlGradeAnalyzer, SWT.NONE);
 		loadData.addSelectionListener(new SelectionAdapter() {
@@ -204,7 +247,7 @@ public class WorkGUI
 
 										for (int iter = 0; iter < commaDel.length; iter++)
 										{
-											double addNum = Double.parseDouble(commaDel[iter]);
+											float addNum = Float.parseFloat(commaDel[iter]);
 											entries.add(addNum);
 										}
 									}
@@ -217,6 +260,7 @@ public class WorkGUI
 
 								if (error != 1)
 								{
+									//TODO: Not sure what this is for, not sure what error is used for either
 									trackErrors.setText("");
 								}
 								fileToLoad.setText("");
@@ -249,7 +293,7 @@ public class WorkGUI
 									lineCount++;
 									try
 									{
-										double addNum = Integer.parseInt(content);
+										float addNum = Integer.parseInt(content);
 										entries.add(addNum);
 									}
 									catch (NumberFormatException word)
@@ -261,6 +305,7 @@ public class WorkGUI
 								
 								if (error != 1)
 								{
+									//TODO: Again not sure what this is
 									trackErrors.setText("");
 								}
 								fileToLoad.setText("");
@@ -282,13 +327,13 @@ public class WorkGUI
 						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
 					}
 				}
+				else {
+					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it.\n");
+				}
 			}
 		});
 		loadData.setBounds(20, 142, 112, 27);
 		loadData.setText("Load from File");
-		
-		fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
-		fileToLoad.setBounds(20, 117, 112, 19);
 		
 		appendData = new Button(shlGradeAnalyzer, SWT.NONE);
 		appendData.addSelectionListener(new SelectionAdapter() {
@@ -322,7 +367,7 @@ public class WorkGUI
 									lineCount++;
 									try
 									{
-										double addNum = Double.parseDouble(content);
+										float addNum = Float.parseFloat(content);
 										entries.add(addNum);
 									}
 									catch (NumberFormatException word)
@@ -348,6 +393,9 @@ public class WorkGUI
 					{
 						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
 					}
+				}
+				else {
+					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it.\n");
 				}
 			}
 		});
@@ -383,16 +431,16 @@ public class WorkGUI
 				else {
 					int numentries = entries.size();
 					Collections.sort(entries);
-					double min = entries.get(0);
+					float min = entries.get(0);
 					Collections.reverse(entries);
-					double max = entries.get(0);
-					double sum = 0;
+					float max = entries.get(0);
+					float sum = 0f;
 					for (int i = 0; i < entries.size(); i++){
 						sum = sum + entries.get(i);
 					}
-					double mean = sum/entries.size();
+					float mean = sum/entries.size();
 					Collections.sort(entries);
-					double median;
+					float median;
 					if (entries.size()%2 != 0){
 						int index = entries.size()/2;
 						median = entries.get(index);
@@ -402,7 +450,7 @@ public class WorkGUI
 						int index2 = index1 - 1;
 						median = (entries.get(index1) + entries.get(index2))/2;
 					}
-					ArrayList<Double> mode = new ArrayList<Double>();
+					ArrayList<Float> mode = new ArrayList<Float>();
 					ArrayList<Integer> modeindex = new ArrayList<Integer>();
 					Collections.sort(entries);
 					for (int i = 0; i < entries.size(); i ++){
@@ -493,15 +541,15 @@ public class WorkGUI
 					Collections.sort(entries);
 					Collections.reverse(entries);
 					
-					int row = (int) Math.ceil(entries.size() / (double) 4);
+					int row = (int) Math.ceil(entries.size() / (float) 4);
 					
-					double[][] printOut = new double[row][4];
+					float[][] printOut = new float[row][4];
 					
 					for (int u = 0; u < row; u++)
 					{
 						for (int v = 0; v < 4; v++)
 						{
-							printOut[u][v] = 0.9090909111;
+							printOut[u][v] = 0.9090909111f;
 						}
 					}
 					
@@ -522,9 +570,9 @@ public class WorkGUI
 					{
 						for (int i = 0; i < 4; i++)
 						{
-							if (printOut[j][i] != 0.9090909111)
+							if (printOut[j][i] != 0.9090909111f)
 							{
-								dataDisp.append(Double.toString(printOut[j][i]) + "     ");
+								dataDisp.append(Float.toString(printOut[j][i]) + "     ");
 							}
 							
 						}
