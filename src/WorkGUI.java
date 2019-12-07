@@ -48,8 +48,8 @@ public class WorkGUI
 	private Text dataDisp;
 	private Text showAnalysis;
 	private Text showGraph;
-	private Double lowBoundVal = 0d;
-	private Double highBoundVal = 100d;
+	private float lowBoundVal = 0f;
+	private float highBoundVal = 100f;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -111,9 +111,6 @@ public class WorkGUI
 						entries.add(addOn);
 					else
 						trackErrors.append("Out of Bounds Error: Data entered is NOT within the set boundaries\n");
-					
-					//dataToAdd.setText("");
-					//trackErrors.append("Data entered from KEYBOARD succesfully\n");
 				}
 				catch (NumberFormatException g)
 				{
@@ -145,8 +142,6 @@ public class WorkGUI
 						}
 					}
 					
-					//trackErrors.append("The entry " + erase + " was successfully removed\n");
-					//deleteData.setText("");
 				}
 				catch (NumberFormatException x)
 				{
@@ -173,8 +168,8 @@ public class WorkGUI
 				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
 					try
 					{
-						Double lowBoundTemp = Double.parseDouble(lowBoundText);
-						Double highBoundTemp = Double.parseDouble(highBoundText);
+						float lowBoundTemp = Float.parseFloat(lowBoundText);
+						float highBoundTemp = Float.parseFloat(highBoundText);
 						
 						if(lowBoundTemp <= highBoundTemp) {
 							lowBoundVal = lowBoundTemp;
@@ -234,53 +229,23 @@ public class WorkGUI
 		  				int error = 0;
 		  				try
 		  				{
-		  					Scanner track = new Scanner(input);
+		  					BufferedReader track = new BufferedReader(new FileReader(location));
+		  					String content;
 		  					
-		  					while (track.hasNext())
+		  					while ((content = track.readLine()) != null)
 		  					{
 		  						try
 		  						{
-		  							String content = track.nextLine();
 		  							
 		  							if (content.contains(","))
 		  							{
-		  								String[] comSplit = content.split(",", -1);
-		  								String result = "";
+		  								String[] comSplit = content.split(",");
 		  								
-		  								for (int y = 0; y < comSplit.length; y++)
+		  								for (int k = 0; k < comSplit.length; k++)
 		  								{
-		  									result = result + comSplit[y];
-		  									
-		  									if (y != (comSplit.length - 1))
-		  									{
-		  										result += "/";
-		  									}
+		  									if((Double.parseDouble(comSplit[k]) >= lowBoundVal) && (Double.parseDouble(comSplit[k]) <= highBoundVal))
+		  										entries.add(Double.parseDouble(comSplit[k]));
 		  								}
-		  								
-		  								String[] dashSplit = result.split("/", -1);
-		  								
-		  								for (int v = 0; v < dashSplit.length; v++)
-		  								{
-		  									if((Double.parseDouble(dashSplit[v]) >= lowBoundVal) && (Double.parseDouble(dashSplit[v]) <= highBoundVal))
-		  										entries.add(Double.parseDouble(dashSplit[v]));
-		  								}
-		  								
-		  								//double[] converted = new double[comSplit.length];
-		  								
-		  								/*for (int j = 0; j < comSplit.length; j++)
-		  								{
-		  									converted[j] = Double.valueOf(comSplit[j]);
-		  								}
-		  								
-		  								/*for (int w = 0; w < converted.length; w++)
-		  								{
-		  									System.out.print(Double.toString(converted[w]) + " ");
-		  								}*/
-		  								
-		  								/*for (int k = 0; k < converted.length; k++)
-		  								{
-		  									entries.add(converted[k]);
-		  								}*/
 		  							}
 		  							else
 		  							{
@@ -301,12 +266,15 @@ public class WorkGUI
 		  					{
 		  						trackErrors.setText("");
 		  					}
-		  					track.close();
 		  				}
 		  				catch (FileNotFoundException eff)
 		  				{
 		  					trackErrors.append("File Error: The file could not be found\n");
 		  				}
+		  				catch (IOException gh)
+  						{
+  							trackErrors.append("Input Error\n");
+  						}
 		  			}
 		  			else
 		  			{
@@ -337,25 +305,24 @@ public class WorkGUI
 		  			File input = new File(location);
 		  			if (input.isFile())
 		  			{
-		  				int error = 0;
 		  				try
 		  				{
-		  					Scanner track = new Scanner(input);
+		  					BufferedReader track = new BufferedReader(new FileReader(location));
+		  					String content;
 		  					
-		  					while (track.hasNext())
+		  					while ((content = track.readLine()) != null)
 		  					{
 		  						try
 		  						{
-		  							String content = track.nextLine();
 		  							
 		  							if (content.contains(","))
 		  							{
 		  								String[] comSplit = content.split(",");
 		  								
-		  								
-		  								for (int j = 0; j < comSplit.length; j++)
+		  								for (int k = 0; k < comSplit.length; k++)
 		  								{
-		  									
+		  									if((Double.parseDouble(comSplit[k]) >= lowBoundVal) && (Double.parseDouble(comSplit[k]) <= highBoundVal))
+		  										entries.add(Double.parseDouble(comSplit[k]));
 		  								}
 		  							}
 		  							else
@@ -368,33 +335,34 @@ public class WorkGUI
 		  						}
 		  						catch (NumberFormatException xz)
 		  						{
-		  							error = 1;
 		  							trackErrors.append("Input Error: Some of the data entered was NOT a number\n");
 		  						}
 		  					}
-		  					
-		  					if (error != 1)
-		  					{
-		  						trackErrors.setText("");
-		  					}
-		  					track.close();
 		  				}
 		  				catch (FileNotFoundException eff)
 		  				{
 		  					trackErrors.append("File Error: The file could not be found\n");
 		  				}
+		  				catch (IOException gh)
+  						{
+  							trackErrors.append("Input Error\n");
+  						}
 		  			}
 		  			else
 		  			{
 		 				System.out.print("File is NOT there\n");
 		  			}
+
 	  			}
+				
+				
 			}
 		});
 		appendData.setBounds(196, 546, 141, 37);
 		appendData.setText(" Append from File");
 		
-		trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
+		trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		trackErrors.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 12, SWT.NORMAL));
 		trackErrors.setEditable(false);
 		trackErrors.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		trackErrors.setBounds(21, 85, 323, 414);
@@ -427,7 +395,6 @@ public class WorkGUI
 					for (int i = 0; i < entries.size(); i++){
 						sum = sum + entries.get(i);
 					}
-					//change again
 					double mean = sum/entries.size();
 					Collections.sort(entries);
 					double median;
@@ -443,11 +410,6 @@ public class WorkGUI
 					ArrayList<Double> mode = new ArrayList<Double>();
 					Collections.sort(entries);
 					
-					for (int fuh = 0; fuh < entries.size(); fuh++)
-					{
-						System.out.print(entries.get(fuh) + " ");
-					}
-					System.out.print("\n");
 					
 					for (int i = 1; i < entries.size(); i++){
 						
@@ -456,7 +418,6 @@ public class WorkGUI
 							}
 						
 					}
-					System.out.println("List Size: " + mode.size());
 					ArrayList<Integer> modeindex = new ArrayList<Integer>();
 					if (mode.size() > 0){
 						int[] modecount = new int[mode.size()]; 
@@ -472,11 +433,19 @@ public class WorkGUI
 							
 								if (modecount[i] >= maxmode){
 									maxmode = modecount[i];
-									modeindex.add(i);
+									//modeindex.add(i);
 								}
 							
 						}
-						//commit comment
+						
+						for(int i = 0; i < modecount.length; i++){
+							
+							if (modecount[i] >= maxmode){
+								maxmode = modecount[i];
+								modeindex.add(i);
+							}
+						
+						}
 
 					}
 					ArrayList<Double> printmode = new ArrayList<Double>();
@@ -492,18 +461,18 @@ public class WorkGUI
 						}
 					}
 					if(printmode.size() > 0){
-						showAnalysis.append("\n Mode(s): ");
+						showAnalysis.append("\nMode(s): ");
 						for (int i = 0; i < printmode.size(); i ++){
 							showAnalysis.append("\n" + printmode.get(i));
 						}
 					}
 					else{
-						showAnalysis.append("\n No entries repeat, every entry is the mode.");
+						showAnalysis.append("\nNo entries repeat, every entry is the mode.");
 					}
-					showAnalysis.append("\n Number of Entries: " + numentries);
-					showAnalysis.append("\n Low: " + min);
-					showAnalysis.append("\n High: " + max);
-					showAnalysis.append("\n Median: " + median);
+					showAnalysis.append("\nNumber of Entries: " + numentries);
+					showAnalysis.append("\nLow: " + min);
+					showAnalysis.append("\nHigh: " + max);
+					showAnalysis.append("\nMedian: " + median +"\n\n");
 				}
 			}
 		});
@@ -519,6 +488,8 @@ public class WorkGUI
 			public void widgetSelected(SelectionEvent e) 
 			{
 				if(!entries.isEmpty()) {
+					showGraph.setText("");
+					
 					int count10 = 0;
 					int count20 = 0;
 					int count30 = 0;
@@ -617,7 +588,7 @@ public class WorkGUI
 					showGraph.append("\n");
 				}
 				else {
-					trackErrors.append("Graph Error: There is no data to display\n");
+					trackErrors.append("Graph Error: There is no data to output\n");
 				}
 			}
 		});
@@ -633,6 +604,7 @@ public class WorkGUI
 			public void widgetSelected(SelectionEvent e) 
 
 			{
+				
 
 				double total = entries.size();
 
@@ -666,6 +638,7 @@ public class WorkGUI
 
 				}
 				else {
+					showAnalysis.setText("");
 					
 					Collections.sort(entries);
 					for (int i = 0; i < entries.size(); i ++){
@@ -712,7 +685,7 @@ public class WorkGUI
 						}
 					}
 				
-	
+
 					double lessZero = (sum0/less0Prec);
 					if (sum0 == 0){
 						showAnalysis.append("There are no entries less than 0 %\n");
@@ -802,10 +775,10 @@ public class WorkGUI
 	
 					double hundredMore = (sum10/above100Prec);
 					if (sum10 == 0){
-						showAnalysis.append("There are no entries between 90 and 100 %\n");
+						showAnalysis.append("There are no entries between 90 and 100 %\n\n");
 					}
 					else {
-						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
+						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n\n");
 					}
 				}
 			}
@@ -825,9 +798,10 @@ public class WorkGUI
 					analytics.notifyListeners(SWT.Selection, new Event());
 					showDist.notifyListeners(SWT.Selection, new Event());
 					dispGraph.notifyListeners(SWT.Selection, new Event());
+					File dir = new File("C:\\");
+					Writer fileWriter = new FileWriter("output.txt");
 		
-					Writer fileWriter = new FileWriter("desktop\\output.txt");
-		
+					fileWriter.write("Grade Analytics Report: \n");
 					fileWriter.write(showAnalysis.getText());
 					fileWriter.write(showGraph.getText());
 		
@@ -843,9 +817,9 @@ public class WorkGUI
 			
 		});
 		
-		dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
+		dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
-		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 18, SWT.BOLD));
+		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD));
 		dataDisp.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		dataDisp.setBounds(467, 21, 271, 325);
 		
@@ -909,12 +883,13 @@ public class WorkGUI
 		showData.setText("Display Data");
 		
 		showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
-		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 11, SWT.NORMAL));
+		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 12, SWT.NORMAL));
 		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		showAnalysis.setEditable(false);
 		showAnalysis.setBounds(778, 21, 294, 325);
 		
-		showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
+		showGraph = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
+		showGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 12, SWT.NORMAL));
 		showGraph.setEditable(false);
 		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		showGraph.setBounds(441, 404, 652, 245);
