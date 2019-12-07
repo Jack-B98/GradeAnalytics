@@ -188,10 +188,13 @@ public class WorkGUI
 				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
 					try
 					{
-						lowBoundVal = Float.parseFloat(lowBoundText);
-						highBoundVal = Float.parseFloat(highBoundText);
+						float lowBoundTemp = Float.parseFloat(lowBoundText);
+						float highBoundTemp = Float.parseFloat(highBoundText);
 						
-						if(lowBoundVal <= highBoundVal) {
+						if(lowBoundTemp <= highBoundTemp) {
+							lowBoundVal = lowBoundTemp;
+							highBoundVal = highBoundTemp;
+									
 							for (int d = 0; d < entries.size(); d++)
 							{
 								if ((entries.get(d) < lowBoundVal) || (entries.get(d) > highBoundVal))
