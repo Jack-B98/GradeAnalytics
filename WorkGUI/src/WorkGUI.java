@@ -106,9 +106,11 @@ public class WorkGUI
 				try
 				{
 					double addOn = Double.parseDouble(dataToAdd.getText());
-					entries.add(addOn);
-					dataToAdd.setText("");
-					trackErrors.append("Data entered from KEYBOARD succesfully\n");
+					
+					if((addOn >= lowBoundVal) && (addOn <= highBoundVal))
+						entries.add(addOn);
+					else
+						trackErrors.append("Out of Bounds Error: Data entered is NOT within the set boundaries\n");
 				}
 				catch (NumberFormatException g)
 				{
@@ -136,12 +138,10 @@ public class WorkGUI
 						if (entries.get(d) == erase)
 						{
 							entries.remove(d);
-							d = -1;
+							d = entries.size();
 						}
 					}
 					
-					trackErrors.append("The entry " + erase + " was successfully removed\n");
-					deleteData.setText("");
 				}
 				catch (NumberFormatException x)
 				{
@@ -243,13 +243,15 @@ public class WorkGUI
 		  								
 		  								for (int k = 0; k < comSplit.length; k++)
 		  								{
-		  									entries.add(Double.parseDouble(comSplit[k]));
+		  									if((Double.parseDouble(comSplit[k]) >= lowBoundVal) && (Double.parseDouble(comSplit[k]) <= highBoundVal))
+		  										entries.add(Double.parseDouble(comSplit[k]));
 		  								}
 		  							}
 		  							else
 		  							{
 		  								double addNum = Double.parseDouble(content);
-			  							entries.add(addNum);
+		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+		  									entries.add(addNum);
 		  							}
 		  							
 		  						}
@@ -319,13 +321,15 @@ public class WorkGUI
 		  								
 		  								for (int k = 0; k < comSplit.length; k++)
 		  								{
-		  									entries.add(Double.parseDouble(comSplit[k]));
+		  									if((Double.parseDouble(comSplit[k]) >= lowBoundVal) && (Double.parseDouble(comSplit[k]) <= highBoundVal))
+		  										entries.add(Double.parseDouble(comSplit[k]));
 		  								}
 		  							}
 		  							else
 		  							{
 		  								double addNum = Double.parseDouble(content);
-			  							entries.add(addNum);
+		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
+		  									entries.add(addNum);
 		  							}
 		  							
 		  						}
@@ -441,7 +445,7 @@ public class WorkGUI
 								modeindex.add(i);
 							}
 						
-					}
+						}
 
 					}
 					ArrayList<Double> printmode = new ArrayList<Double>();
@@ -483,102 +487,109 @@ public class WorkGUI
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
-				int count10 = 0;
-				int count20 = 0;
-				int count30 = 0;
-				int count40 = 0;
-				int count50 = 0;
-				int count60 = 0;
-				int count70 = 0;
-				int count80 = 0;
-				int count90 = 0;
-				int count100 = 0;
-
-				Collections.sort(entries);
-				for (int i = 0; i < entries.size(); i ++){
-					if (entries.get(i).compareTo(10.0) <= 0){
-						count10++;
+				if(!entries.isEmpty()) {
+					showGraph.setText("");
+					
+					int count10 = 0;
+					int count20 = 0;
+					int count30 = 0;
+					int count40 = 0;
+					int count50 = 0;
+					int count60 = 0;
+					int count70 = 0;
+					int count80 = 0;
+					int count90 = 0;
+					int count100 = 0;
+	
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (entries.get(i).compareTo(10.0) <= 0){
+							count10++;
+						}
+						else if (entries.get(i).compareTo(20.0) <= 0){
+							count20++;
+						}
+						else if (entries.get(i).compareTo(30.0) <= 0){
+							count30++;
+						}
+						else if (entries.get(i).compareTo(40.0) <= 0){
+							count40++;
+						}
+						else if (entries.get(i).compareTo(50.0) <= 0){
+							count50++;
+						}
+						else if (entries.get(i).compareTo(60.0) <= 0){
+							count60++;
+						}
+						else if (entries.get(i).compareTo(70.0) <= 0){
+							count70++;
+						}
+						else if (entries.get(i).compareTo(80.0) <= 0){
+							count80++;
+						}
+						else if (entries.get(i).compareTo(90.0) <= 0){
+							count90++;
+						}
+						else if (entries.get(i).compareTo(100.0) <= 0){
+							count100++;
+						}
 					}
-					else if (entries.get(i).compareTo(20.0) <= 0){
-						count20++;
+	
+					showGraph.append("\tGrade Distribution Graph: \n");
+					showGraph.append("0 - 10% :: ");
+					for (int i = 0; i < count10; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(30.0) <= 0){
-						count30++;
+					showGraph.append("\n");
+					showGraph.append("10 - 20% :: ");
+					for (int i = 0; i < count20; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(40.0) <= 0){
-						count40++;
+					showGraph.append("\n");
+					showGraph.append("20 - 30% :: ");
+					for (int i = 0; i < count30; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(50.0) <= 0){
-						count50++;
+					showGraph.append("\n");
+					showGraph.append("30 - 40% :: ");
+					for (int i = 0; i < count40; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(60.0) <= 0){
-						count60++;
+					showGraph.append("\n");
+					showGraph.append("40 - 50% :: ");
+					for (int i = 0; i < count50; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(70.0) <= 0){
-						count70++;
+					showGraph.append("\n");
+					showGraph.append("50 - 60% :: ");
+					for (int i = 0; i < count60; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(80.0) <= 0){
-						count80++;
+					showGraph.append("\n");
+					showGraph.append("60 - 70% :: ");
+					for (int i = 0; i < count70; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(90.0) <= 0){
-						count90++;
+					showGraph.append("\n");
+					showGraph.append("70 - 80% :: ");
+					for (int i = 0; i < count80; i ++){
+						showGraph.append("#");
 					}
-					else if (entries.get(i).compareTo(100.0) <= 0){
-						count100++;
+					showGraph.append("\n");
+					showGraph.append("80 - 90% :: ");
+					for (int i = 0; i < count90; i ++){
+						showGraph.append("#");
 					}
+					showGraph.append("\n");
+					showGraph.append("90 - 100% :: ");
+					for (int i = 0; i < count100; i ++){
+						showGraph.append("#");
+					}
+					showGraph.append("\n");
 				}
-
-				showGraph.append("\tGrade Distribution Graph: \n");
-				showGraph.append("0 - 10% :: ");
-				for (int i = 0; i < count10; i ++){
-					showGraph.append("#");
+				else {
+					trackErrors.append("Graph Error: There is no data to output\n");
 				}
-				showGraph.append("\n");
-				showGraph.append("10 - 20% :: ");
-				for (int i = 0; i < count20; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("20 - 30% :: ");
-				for (int i = 0; i < count30; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("30 - 40% :: ");
-				for (int i = 0; i < count40; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("40 - 50% :: ");
-				for (int i = 0; i < count50; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("50 - 60% :: ");
-				for (int i = 0; i < count60; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("60 - 70% :: ");
-				for (int i = 0; i < count70; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("70 - 80% :: ");
-				for (int i = 0; i < count80; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("80 - 90% :: ");
-				for (int i = 0; i < count90; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
-				showGraph.append("90 - 100% :: ");
-				for (int i = 0; i < count100; i ++){
-					showGraph.append("#");
-				}
-				showGraph.append("\n");
 			}
 		});
 		
@@ -593,6 +604,7 @@ public class WorkGUI
 			public void widgetSelected(SelectionEvent e) 
 
 			{
+				
 
 				double total = entries.size();
 
@@ -626,146 +638,148 @@ public class WorkGUI
 
 				}
 				else {
+					showAnalysis.setText("");
 					
-				Collections.sort(entries);
-				for (int i = 0; i < entries.size(); i ++){
-					if (entries.get(i).compareTo(10.0) <= 0){
-						sum1 = sum1 + entries.get(i);
-						tenPrec++;
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (entries.get(i).compareTo(10.0) <= 0){
+							sum1 = sum1 + entries.get(i);
+							tenPrec++;
+						}
+						else if (entries.get(i).compareTo(20.0) <= 0){
+							sum2 = sum2 + entries.get(i);
+							twtyPrec++;
+						}
+						else if (entries.get(i).compareTo(30.0) <= 0){
+							sum3 = sum3 + entries.get(i);
+							tirtPrec++;
+						}
+						else if (entries.get(i).compareTo(40.0) <= 0){
+							sum4 = sum4 + entries.get(i);
+							fourtPrec++;
+						}
+						else if (entries.get(i).compareTo(50.0) <= 0){
+							sum5 = sum5 + entries.get(i);
+							fiftPrec++;
+						}
+						else if (entries.get(i).compareTo(60.0) <= 0){
+							sum6 = sum6 + entries.get(i);
+							sixPrec++;
+						}
+						else if (entries.get(i).compareTo(70.0) <= 0){
+							sum7 = sum7 + entries.get(i);
+							sevenPrec++;
+						}
+						else if (entries.get(i).compareTo(80.0) <= 0){
+							sum8 = sum8 + entries.get(i);
+							eightyPrec++;
+						}
+						else if (entries.get(i).compareTo(90.0) <= 0){
+							sum9 = sum9 + entries.get(i);
+							ninePrec++;
+	
+						}
+						else if (entries.get(i).compareTo(100.0) <= 0){
+							sum10 = sum10 + entries.get(i);
+							above100Prec++;
+						}
 					}
-					else if (entries.get(i).compareTo(20.0) <= 0){
-						sum2 = sum2 + entries.get(i);
-						twtyPrec++;
-					}
-					else if (entries.get(i).compareTo(30.0) <= 0){
-						sum3 = sum3 + entries.get(i);
-						tirtPrec++;
-					}
-					else if (entries.get(i).compareTo(40.0) <= 0){
-						sum4 = sum4 + entries.get(i);
-						fourtPrec++;
-					}
-					else if (entries.get(i).compareTo(50.0) <= 0){
-						sum5 = sum5 + entries.get(i);
-						fiftPrec++;
-					}
-					else if (entries.get(i).compareTo(60.0) <= 0){
-						sum6 = sum6 + entries.get(i);
-						sixPrec++;
-					}
-					else if (entries.get(i).compareTo(70.0) <= 0){
-						sum7 = sum7 + entries.get(i);
-						sevenPrec++;
-					}
-					else if (entries.get(i).compareTo(80.0) <= 0){
-						sum8 = sum8 + entries.get(i);
-						eightyPrec++;
-					}
-					else if (entries.get(i).compareTo(90.0) <= 0){
-						sum9 = sum9 + entries.get(i);
-						ninePrec++;
-
-					}
-					else if (entries.get(i).compareTo(100.0) <= 0){
-						sum10 = sum10 + entries.get(i);
-						above100Prec++;
-					}
-				}
-			}
-
-				double lessZero = (sum0/less0Prec);
-				if (sum0 == 0){
-					showAnalysis.append("There are no entries less than 0 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
-				}
-
 				
 
-				double ten = (sum1/tenPrec);
-				if (sum1 == 0){
-					showAnalysis.append("There are no entries between 0 and 10 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
-				}
-
-				
-
-				double twenty = (sum2/twtyPrec);
-				if (sum2 == 0){
-					showAnalysis.append("There are no entries between 10 and 20 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
-				}
-
-				double thirty = (sum3/tirtPrec);
-				if (sum3 == 0){
-					showAnalysis.append("There are no entries between 20 and 30 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
-				}
-				
-
-				double forty = (sum4/fourtPrec);
-				if (sum4 == 0){
-					showAnalysis.append("There are no entries between 30 and 40 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
-				}
-
-				double fifty = (sum5/fiftPrec);
-				if (sum5 == 0){
-					showAnalysis.append("There are no entries between 40 and 50 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
-				}
-
-				double sixty = (sum6/sixPrec);
-				if (sum6 == 0){
-					showAnalysis.append("There are no entries between 50 and 60 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
-				}
-				
-
-				double seventy = (sum7/sevenPrec);
-				if (sum7 == 0){
-					showAnalysis.append("There are no entries between 60 and 70 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
-				}
-				
-
-				double eighty = (sum8/eightyPrec);
-				if (sum8 == 0){
-					showAnalysis.append("There are no entries between 70 and 80 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
-				}
-
-				double ninty = (sum9/ninePrec);
-				if (sum9 == 0){
-					showAnalysis.append("There are no entries between 80 and 90 %\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
-				}
-
-				double hundredMore = (sum10/above100Prec);
-				if (sum10 == 0){
-					showAnalysis.append("There are no entries between 90 and 100 %\n\n");
-				}
-				else {
-					showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n\n");
+					double lessZero = (sum0/less0Prec);
+					if (sum0 == 0){
+						showAnalysis.append("There are no entries less than 0 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
+					}
+	
+					
+	
+					double ten = (sum1/tenPrec);
+					if (sum1 == 0){
+						showAnalysis.append("There are no entries between 0 and 10 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
+					}
+	
+					
+	
+					double twenty = (sum2/twtyPrec);
+					if (sum2 == 0){
+						showAnalysis.append("There are no entries between 10 and 20 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
+					}
+	
+					double thirty = (sum3/tirtPrec);
+					if (sum3 == 0){
+						showAnalysis.append("There are no entries between 20 and 30 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
+					}
+					
+	
+					double forty = (sum4/fourtPrec);
+					if (sum4 == 0){
+						showAnalysis.append("There are no entries between 30 and 40 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
+					}
+	
+					double fifty = (sum5/fiftPrec);
+					if (sum5 == 0){
+						showAnalysis.append("There are no entries between 40 and 50 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
+					}
+	
+					double sixty = (sum6/sixPrec);
+					if (sum6 == 0){
+						showAnalysis.append("There are no entries between 50 and 60 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
+					}
+					
+	
+					double seventy = (sum7/sevenPrec);
+					if (sum7 == 0){
+						showAnalysis.append("There are no entries between 60 and 70 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
+					}
+					
+	
+					double eighty = (sum8/eightyPrec);
+					if (sum8 == 0){
+						showAnalysis.append("There are no entries between 70 and 80 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
+					}
+	
+					double ninty = (sum9/ninePrec);
+					if (sum9 == 0){
+						showAnalysis.append("There are no entries between 80 and 90 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
+					}
+	
+					double hundredMore = (sum10/above100Prec);
+					if (sum10 == 0){
+						showAnalysis.append("There are no entries between 90 and 100 %\n\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n\n");
+					}
 				}
 			}
 
