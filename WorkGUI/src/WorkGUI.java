@@ -1,5 +1,5 @@
 import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.SWT;
@@ -48,6 +48,8 @@ public class WorkGUI
 	private Text dataDisp;
 	private Text showAnalysis;
 	private Text showGraph;
+	private float lowBoundVal = 0f;
+	private float highBoundVal = 100f;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -156,6 +158,49 @@ public class WorkGUI
 		setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
 		setBounds.setBounds(261, 46, 124, 27);
 		setBounds.setText("Set Bounds");
+		setBounds.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				String lowBoundText = lowBound.getText();
+				String highBoundText = highBound.getText();
+				
+				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
+					try
+					{
+						float lowBoundTemp = Float.parseFloat(lowBoundText);
+						float highBoundTemp = Float.parseFloat(highBoundText);
+						
+						if(lowBoundTemp <= highBoundTemp) {
+							lowBoundVal = lowBoundTemp;
+							highBoundVal = highBoundTemp;
+									
+							for (int d = 0; d < entries.size(); d++)
+							{
+								if ((entries.get(d) < lowBoundVal) || (entries.get(d) > highBoundVal))
+								{
+									entries.remove(d);
+									d -= 1;
+								}
+							}
+						}
+						else
+							trackErrors.append("Boundary Values Error: Please make sure the lower\nboundary value is less than or equal to the upper\nboundary value\n");
+					}
+					catch (NumberFormatException x)
+					{
+						trackErrors.append("Conversion Error: Desired boundaries must ONLY\nbe numbers\n");
+					}
+				}
+				else {
+					if(lowBoundText.isEmpty())
+						trackErrors.append("Lower Bound Blank: Please enter a value for the\nlower bound before trying to set the boundaries\n");
+					
+					if(highBoundText.isEmpty())
+						trackErrors.append("Upper Bound Blank: Please enter a value for the\nupper bound before trying to set the boundaries\n");
+				}
+			}
+		});
 		
 		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		lowBound.setBounds(251, 21, 72, 19);
@@ -194,13 +239,42 @@ public class WorkGUI
 		  							
 		  							if (content.contains(","))
 		  							{
-		  								String[] comSplit = content.split(",");
+		  								String[] comSplit = content.split(",", -1);
+		  								String result = "";
 		  								
-		  								
-		  								for (int j = 0; j < comSplit.length; j++)
+		  								for (int y = 0; y < comSplit.length; y++)
 		  								{
+		  									result = result + comSplit[y];
 		  									
+		  									if (y != (comSplit.length - 1))
+		  									{
+		  										result += "/";
+		  									}
 		  								}
+		  								
+		  								String[] dashSplit = result.split("/", -1);
+		  								
+		  								for (int v = 0; v < dashSplit.length; v++)
+		  								{
+		  									entries.add(Double.parseDouble(dashSplit[v]));
+		  								}
+		  								
+		  								//double[] converted = new double[comSplit.length];
+		  								
+		  								/*for (int j = 0; j < comSplit.length; j++)
+		  								{
+		  									converted[j] = Double.valueOf(comSplit[j]);
+		  								}
+		  								
+		  								/*for (int w = 0; w < converted.length; w++)
+		  								{
+		  									System.out.print(Double.toString(converted[w]) + " ");
+		  								}*/
+		  								
+		  								/*for (int k = 0; k < converted.length; k++)
+		  								{
+		  									entries.add(converted[k]);
+		  								}*/
 		  							}
 		  							else
 		  							{
@@ -728,6 +802,32 @@ public class WorkGUI
 		genReport.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		genReport.setBounds(109, 612, 144, 37);
 		genReport.setText("Generate Report");
+		genReport.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				try
+				{
+					analytics.notifyListeners(SWT.Selection, new Event());
+					showDist.notifyListeners(SWT.Selection, new Event());
+					dispGraph.notifyListeners(SWT.Selection, new Event());
+		
+					Writer fileWriter = new FileWriter("desktop\\output.txt");
+		
+					fileWriter.write(showAnalysis.getText());
+					fileWriter.write(showGraph.getText());
+		
+					fileWriter.flush();
+					fileWriter.close();
+				}
+				catch (IOException d)
+				{
+					
+				}
+				
+			}
+			
+		});
 		
 		dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
