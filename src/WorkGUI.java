@@ -1,5 +1,5 @@
 import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.SWT;
@@ -28,21 +28,28 @@ public class WorkGUI
 {
 
 	protected Shell shlGradeAnalyzer;
+	private Text dataToAdd;
+	private Button deleteData;
+	private Text dataToKill;
+	private Button setBounds;
+	private Text lowBound;
+	private Text highBound;
+	private Button loadData;
+	private Button appendData;
 	private Text trackErrors;
 	
 	//Stuff for file operations and analyzing the numbers
-	//TODO: Need to have the program store the values in here instead of within the method
 	private BufferedReader scan;
 	private int numOfEntries = 0;
 	private int highestVal = 0;
 	private int lowestVal = 0;
 	private int mean, median, mode;
-	private ArrayList<Float> entries = new ArrayList<Float>();
+	private ArrayList<Double> entries = new ArrayList<Double>();
 	private Text dataDisp;
 	private Text showAnalysis;
 	private Text showGraph;
-	private float lowBoundVal = 0f;
-	private float highBoundVal = 100f;
+	private Double lowBoundVal = 0d;
+	private Double highBoundVal = 100d;
 	/**
 	 * @wbp.nonvisual location=329,171
 	 */
@@ -86,15 +93,10 @@ public class WorkGUI
 	 */
 	protected void createContents()
 	{
-		
 		shlGradeAnalyzer = new Shell();
 		shlGradeAnalyzer.setBackground(SWTResourceManager.getColor(160, 82, 45));
 		shlGradeAnalyzer.setSize(1122, 737);
 		shlGradeAnalyzer.setText("Grade Analyzer");
-		
-		//Moved the text box blocks above their button blocks in the code for visual clarity
-		Text dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
-		dataToAdd.setBounds(20, 21, 94, 19);
 		
 		Button addData = new Button(shlGradeAnalyzer, SWT.NONE);
 		addData.addSelectionListener(new SelectionAdapter() {
@@ -103,16 +105,14 @@ public class WorkGUI
 			{
 				try
 				{
-					float addOn = Float.parseFloat(dataToAdd.getText());
+					double addOn = Double.parseDouble(dataToAdd.getText());
 					
 					if((addOn >= lowBoundVal) && (addOn <= highBoundVal))
 						entries.add(addOn);
 					else
 						trackErrors.append("Out of Bounds Error: Data entered is NOT within the set boundaries\n");
 					
-					//TODO: Removes the text from the button...
 					//dataToAdd.setText("");
-					//TODO: Only need to display error message, these logs need to go into the report string
 					//trackErrors.append("Data entered from KEYBOARD succesfully\n");
 				}
 				catch (NumberFormatException g)
@@ -123,33 +123,29 @@ public class WorkGUI
 		});
 		addData.setBounds(10, 46, 117, 27);
 		addData.setText("Add Value");
+
+		dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
+		dataToAdd.setBounds(20, 21, 94, 19);
 		
-		//Moved the text box blocks above their button blocks in the code for visual clarity
-		Text dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
-		dataToKill.setBounds(138, 21, 94, 19);
-		
-		Button deleteData = new Button(shlGradeAnalyzer, SWT.NONE);
+		deleteData = new Button(shlGradeAnalyzer, SWT.NONE);
 		deleteData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
 			{
 				try
 				{
-					float erase = Float.parseFloat(dataToKill.getText());
+					double erase = Double.parseDouble(dataToKill.getText());
 					
 					for (int d = 0; d < entries.size(); d++)
 					{
 						if (entries.get(d) == erase)
 						{
-							//TODO: This is only supposed to delete the first instance of the value and thats all
 							entries.remove(d);
 							d = entries.size();
 						}
 					}
 					
-					//TODO: Only need to display error message, these logs need to go into the report string
 					//trackErrors.append("The entry " + erase + " was successfully removed\n");
-					//TODO: This gets rid of the button text
 					//deleteData.setText("");
 				}
 				catch (NumberFormatException x)
@@ -161,16 +157,12 @@ public class WorkGUI
 		deleteData.setBounds(130, 46, 112, 27);
 		deleteData.setText("Delete Value");
 		
-		//TODO: Need something to show the user the left box is the lower bound box, and the right is the upper bound box
-		Text lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
-		lowBound.setBounds(251, 21, 72, 19);
-		lowBound.setText("0");
+		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
+		dataToKill.setBounds(138, 21, 94, 19);
 		
-		Text highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
-		highBound.setBounds(329, 21, 72, 19);
-		highBound.setText("100");
-		
-		Button setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
+		setBounds = new Button(shlGradeAnalyzer, SWT.NONE);
+		setBounds.setBounds(261, 46, 124, 27);
+		setBounds.setText("Set Bounds");
 		setBounds.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -181,8 +173,8 @@ public class WorkGUI
 				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
 					try
 					{
-						float lowBoundTemp = Float.parseFloat(lowBoundText);
-						float highBoundTemp = Float.parseFloat(highBoundText);
+						Double lowBoundTemp = Double.parseDouble(lowBoundText);
+						Double highBoundTemp = Double.parseDouble(highBoundText);
 						
 						if(lowBoundTemp <= highBoundTemp) {
 							lowBoundVal = lowBoundTemp;
@@ -214,10 +206,16 @@ public class WorkGUI
 				}
 			}
 		});
-		setBounds.setBounds(261, 46, 124, 27);
-		setBounds.setText("Set Bounds");
 		
-		Button loadData = new Button(shlGradeAnalyzer, SWT.NONE);
+		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
+		lowBound.setBounds(251, 21, 72, 19);
+		
+		highBound = new Text(shlGradeAnalyzer, SWT.BORDER);
+		highBound.setBounds(329, 21, 72, 19);
+		
+		
+		loadData = new Button(shlGradeAnalyzer, SWT.NONE);
+		loadData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		loadData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -246,17 +244,47 @@ public class WorkGUI
 		  							
 		  							if (content.contains(","))
 		  							{
-		  								String[] comSplit = content.split(",");
+		  								String[] comSplit = content.split(",", -1);
+		  								String result = "";
 		  								
-		  								
-		  								for (int j = 0; j < comSplit.length; j++)
+		  								for (int y = 0; y < comSplit.length; y++)
 		  								{
-		  									//TODO: Why is this empty
+		  									result = result + comSplit[y];
+		  									
+		  									if (y != (comSplit.length - 1))
+		  									{
+		  										result += "/";
+		  									}
 		  								}
+		  								
+		  								String[] dashSplit = result.split("/", -1);
+		  								
+		  								for (int v = 0; v < dashSplit.length; v++)
+		  								{
+		  									if((Double.parseDouble(dashSplit[v]) >= lowBoundVal) && (Double.parseDouble(dashSplit[v]) <= highBoundVal))
+		  										entries.add(Double.parseDouble(dashSplit[v]));
+		  								}
+		  								
+		  								//double[] converted = new double[comSplit.length];
+		  								
+		  								/*for (int j = 0; j < comSplit.length; j++)
+		  								{
+		  									converted[j] = Double.valueOf(comSplit[j]);
+		  								}
+		  								
+		  								/*for (int w = 0; w < converted.length; w++)
+		  								{
+		  									System.out.print(Double.toString(converted[w]) + " ");
+		  								}*/
+		  								
+		  								/*for (int k = 0; k < converted.length; k++)
+		  								{
+		  									entries.add(converted[k]);
+		  								}*/
 		  							}
 		  							else
 		  							{
-		  								float addNum = Float.parseFloat(content);
+		  								double addNum = Double.parseDouble(content);
 		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
 		  									entries.add(addNum);
 		  							}
@@ -293,7 +321,8 @@ public class WorkGUI
 		loadData.setBounds(20, 546, 141, 37);
 		loadData.setText("Load from File");
 		
-		Button appendData = new Button(shlGradeAnalyzer, SWT.NONE);
+		appendData = new Button(shlGradeAnalyzer, SWT.NONE);
+		appendData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		appendData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) 
@@ -326,12 +355,12 @@ public class WorkGUI
 		  								
 		  								for (int j = 0; j < comSplit.length; j++)
 		  								{
-		  									//TODO: Why is this empty
+		  									
 		  								}
 		  							}
 		  							else
 		  							{
-		  								float addNum = Float.parseFloat(content);
+		  								double addNum = Double.parseDouble(content);
 		  								if((addNum >= lowBoundVal) && (addNum <= highBoundVal))
 		  									entries.add(addNum);
 		  							}
@@ -365,21 +394,18 @@ public class WorkGUI
 		appendData.setBounds(196, 546, 141, 37);
 		appendData.setText(" Append from File");
 		
-		Text trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
+		trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		trackErrors.setEditable(false);
 		trackErrors.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		trackErrors.setBounds(21, 85, 323, 414);
 		
 		Label lblErrorLog = new Label(shlGradeAnalyzer, SWT.NONE);
+		lblErrorLog.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 16, SWT.NORMAL));
 		lblErrorLog.setBounds(130, 510, 82, 19);
-		lblErrorLog.setText("Error Log");
-		
-		Text showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
-		showAnalysis.setEditable(false);
-		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		showAnalysis.setBounds(778, 21, 294, 325);
+		lblErrorLog.setText("Status Log");
 		
 		Button analytics = new Button(shlGradeAnalyzer, SWT.NONE);
+		analytics.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		analytics.setBounds(922, 361, 160, 37);
 		analytics.setText("Analytics");
 		analytics.addSelectionListener(new SelectionAdapter(){
@@ -394,17 +420,17 @@ public class WorkGUI
 					showAnalysis.setText("");
 					int numentries = entries.size();
 					Collections.sort(entries);
-					float min = entries.get(0);
+					double min = entries.get(0);
 					Collections.reverse(entries);
-					float max = entries.get(0);
-					float sum = 0;
+					double max = entries.get(0);
+					double sum = 0;
 					for (int i = 0; i < entries.size(); i++){
 						sum = sum + entries.get(i);
 					}
 					//change again
-					float mean = sum/entries.size();
+					double mean = sum/entries.size();
 					Collections.sort(entries);
-					float median;
+					double median;
 					if (entries.size()%2 != 0){
 						int index = entries.size()/2;
 						median = entries.get(index);
@@ -414,7 +440,7 @@ public class WorkGUI
 						int index2 = index1 - 1;
 						median = (entries.get(index1) + entries.get(index2))/2;
 					}
-					ArrayList<Float> mode = new ArrayList<Float>();
+					ArrayList<Double> mode = new ArrayList<Double>();
 					Collections.sort(entries);
 					
 					for (int fuh = 0; fuh < entries.size(); fuh++)
@@ -453,7 +479,7 @@ public class WorkGUI
 						//commit comment
 
 					}
-					ArrayList<Float> printmode = new ArrayList<Float>();
+					ArrayList<Double> printmode = new ArrayList<Double>();
 					for (int i = 0; i < modeindex.size(); i++) {
 						boolean found = false;
 						for (int j = 0; j < printmode.size(); j ++) {
@@ -482,196 +508,10 @@ public class WorkGUI
 			}
 		});
 		
-		Button showDist = new Button(shlGradeAnalyzer, SWT.NONE);
-		showDist.setBounds(767, 361, 144, 37);
-		showDist.setText("Show Distribution");
-		showDist.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) 
-			{
-
-				float total = entries.size();
-
-				float less0Prec = 0;
-				float sum0 = 0;
-				float tenPrec = 0;
-				float sum1 = 0;
-				float twtyPrec = 0;
-				float sum2 = 0;
-				float tirtPrec = 0;
-				float sum3 = 0;
-				float fourtPrec = 0;
-				float sum4 = 0;
-				float fiftPrec = 0;
-				float sum5 = 0;
-				float sixPrec = 0;
-				float sum6 = 0;
-				float sevenPrec = 0;
-				float sum7 = 0;
-				float eightyPrec = 0;
-				float sum8 = 0;
-				float ninePrec = 0;
-				float sum9 = 0;
-				float above100Prec = 0;
-				float sum10 = 0;
-				if (entries.isEmpty())
-
-				{
-
-					trackErrors.append("Analytics Error: There is no data to analyze\n");
-
-				}
-				else {
-					Collections.sort(entries);
-					for (int i = 0; i < entries.size(); i ++){
-						if (entries.get(i).compareTo(10.0f) <= 0f){
-							sum1 = sum1 + entries.get(i);
-							tenPrec++;
-						}
-						else if (entries.get(i).compareTo(20.0f) <= 0f){
-							sum2 = sum2 + entries.get(i);
-							twtyPrec++;
-						}
-						else if (entries.get(i).compareTo(30.0f) <= 0f){
-							sum3 = sum3 + entries.get(i);
-							tirtPrec++;
-						}
-						else if (entries.get(i).compareTo(40.0f) <= 0f){
-							sum4 = sum4 + entries.get(i);
-							fourtPrec++;
-						}
-						else if (entries.get(i).compareTo(50.0f) <= 0f){
-							sum5 = sum5 + entries.get(i);
-							fiftPrec++;
-						}
-						else if (entries.get(i).compareTo(60.0f) <= 0f){
-							sum6 = sum6 + entries.get(i);
-							sixPrec++;
-						}
-						else if (entries.get(i).compareTo(70.0f) <= 0f){
-							sum7 = sum7 + entries.get(i);
-							sevenPrec++;
-						}
-						else if (entries.get(i).compareTo(80.0f) <= 0f){
-							sum8 = sum8 + entries.get(i);
-							eightyPrec++;
-						}
-						else if (entries.get(i).compareTo(90.0f) <= 0f){
-							sum9 = sum9 + entries.get(i);
-							ninePrec++;
-	
-						}
-						else if (entries.get(i).compareTo(100.0f) <= 0f){
-							sum10 = sum10 + entries.get(i);
-							above100Prec++;
-						}
-					}
-
-					float lessZero = (sum0/less0Prec);
-					if (sum0 == 0){
-						showAnalysis.append("There are no entries less than 0 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
-					}
-	
-					
-	
-					float ten = (sum1/tenPrec);
-					if (sum1 == 0){
-						showAnalysis.append("There are no entries between 0 and 10 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
-					}
-	
-					
-	
-					float twenty = (sum2/twtyPrec);
-					if (sum2 == 0){
-						showAnalysis.append("There are no entries between 10 and 20 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
-					}
-	
-					float thirty = (sum3/tirtPrec);
-					if (sum3 == 0){
-						showAnalysis.append("There are no entries between 20 and 30 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
-					}
-					
-	
-					float forty = (sum4/fourtPrec);
-					if (sum4 == 0){
-						showAnalysis.append("There are no entries between 30 and 40 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
-					}
-	
-					float fifty = (sum5/fiftPrec);
-					if (sum5 == 0){
-						showAnalysis.append("There are no entries between 40 and 50 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
-					}
-	
-					float sixty = (sum6/sixPrec);
-					if (sum6 == 0){
-						showAnalysis.append("There are no entries between 50 and 60 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
-					}
-					
-	
-					float seventy = (sum7/sevenPrec);
-					if (sum7 == 0){
-						showAnalysis.append("There are no entries between 60 and 70 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
-					}
-					
-	
-					float eighty = (sum8/eightyPrec);
-					if (sum8 == 0){
-						showAnalysis.append("There are no entries between 70 and 80 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
-					}
-	
-					float ninty = (sum9/ninePrec);
-					if (sum9 == 0){
-						showAnalysis.append("There are no entries between 80 and 90 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
-					}
-	
-					float hundredMore = (sum10/above100Prec);
-					if (sum10 == 0){
-						showAnalysis.append("There are no entries between 90 and 100 %\n");
-					}
-					else {
-						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
-					}
-				}
-			}
-
-		});
 		
-		Text showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
-		showGraph.setEditable(false);
-		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		showGraph.setBounds(441, 404, 652, 245);
 		
 		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
+		dispGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		dispGraph.setBounds(714, 655, 124, 37);
 		dispGraph.setText("Display Graph");
 		dispGraph.addSelectionListener(new SelectionAdapter(){
@@ -692,34 +532,34 @@ public class WorkGUI
 	
 					Collections.sort(entries);
 					for (int i = 0; i < entries.size(); i ++){
-						if (entries.get(i).compareTo(10.0f) <= 0f){
+						if (entries.get(i).compareTo(10.0) <= 0){
 							count10++;
 						}
-						else if (entries.get(i).compareTo(20.0f) <= 0f){
+						else if (entries.get(i).compareTo(20.0) <= 0){
 							count20++;
 						}
-						else if (entries.get(i).compareTo(30.0f) <= 0f){
+						else if (entries.get(i).compareTo(30.0) <= 0){
 							count30++;
 						}
-						else if (entries.get(i).compareTo(40.0f) <= 0f){
+						else if (entries.get(i).compareTo(40.0) <= 0){
 							count40++;
 						}
-						else if (entries.get(i).compareTo(50.0f) <= 0f){
+						else if (entries.get(i).compareTo(50.0) <= 0){
 							count50++;
 						}
-						else if (entries.get(i).compareTo(60.0f) <= 0f){
+						else if (entries.get(i).compareTo(60.0) <= 0){
 							count60++;
 						}
-						else if (entries.get(i).compareTo(70.0f) <= 0f){
+						else if (entries.get(i).compareTo(70.0) <= 0){
 							count70++;
 						}
-						else if (entries.get(i).compareTo(80.0f) <= 0f){
+						else if (entries.get(i).compareTo(80.0) <= 0){
 							count80++;
 						}
-						else if (entries.get(i).compareTo(90.0f) <= 0f){
+						else if (entries.get(i).compareTo(90.0) <= 0){
 							count90++;
 						}
-						else if (entries.get(i).compareTo(100.0f) <= 0f){
+						else if (entries.get(i).compareTo(100.0) <= 0){
 							count100++;
 						}
 					}
@@ -782,12 +622,230 @@ public class WorkGUI
 			}
 		});
 		
+		Button showDist = new Button(shlGradeAnalyzer, SWT.NONE);
+		showDist.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
+		showDist.setBounds(767, 361, 144, 37);
+		showDist.setText("Show Distribution");
+		showDist.addSelectionListener(new SelectionAdapter(){
+
+			@Override
+
+			public void widgetSelected(SelectionEvent e) 
+
+			{
+
+				double total = entries.size();
+
+				double less0Prec = 0;
+				double sum0 = 0;
+				double tenPrec = 0;
+				double sum1 = 0;
+				double twtyPrec = 0;
+				double sum2 = 0;
+				double tirtPrec = 0;
+				double sum3 = 0;
+				double fourtPrec = 0;
+				double sum4 = 0;
+				double fiftPrec = 0;
+				double sum5 = 0;
+				double sixPrec = 0;
+				double sum6 = 0;
+				double sevenPrec = 0;
+				double sum7 = 0;
+				double eightyPrec = 0;
+				double sum8 = 0;
+				double ninePrec = 0;
+				double sum9 = 0;
+				double above100Prec = 0;
+				double sum10 = 0;
+				if (entries.isEmpty())
+
+				{
+
+					trackErrors.append("Analytics Error: There is no data to analyze\n");
+
+				}
+				else {
+					
+					Collections.sort(entries);
+					for (int i = 0; i < entries.size(); i ++){
+						if (entries.get(i).compareTo(10.0) <= 0){
+							sum1 = sum1 + entries.get(i);
+							tenPrec++;
+						}
+						else if (entries.get(i).compareTo(20.0) <= 0){
+							sum2 = sum2 + entries.get(i);
+							twtyPrec++;
+						}
+						else if (entries.get(i).compareTo(30.0) <= 0){
+							sum3 = sum3 + entries.get(i);
+							tirtPrec++;
+						}
+						else if (entries.get(i).compareTo(40.0) <= 0){
+							sum4 = sum4 + entries.get(i);
+							fourtPrec++;
+						}
+						else if (entries.get(i).compareTo(50.0) <= 0){
+							sum5 = sum5 + entries.get(i);
+							fiftPrec++;
+						}
+						else if (entries.get(i).compareTo(60.0) <= 0){
+							sum6 = sum6 + entries.get(i);
+							sixPrec++;
+						}
+						else if (entries.get(i).compareTo(70.0) <= 0){
+							sum7 = sum7 + entries.get(i);
+							sevenPrec++;
+						}
+						else if (entries.get(i).compareTo(80.0) <= 0){
+							sum8 = sum8 + entries.get(i);
+							eightyPrec++;
+						}
+						else if (entries.get(i).compareTo(90.0) <= 0){
+							sum9 = sum9 + entries.get(i);
+							ninePrec++;
+	
+						}
+						else if (entries.get(i).compareTo(100.0) <= 0){
+							sum10 = sum10 + entries.get(i);
+							above100Prec++;
+						}
+					}
+				
+	
+					double lessZero = (sum0/less0Prec);
+					if (sum0 == 0){
+						showAnalysis.append("There are no entries less than 0 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries less than 0 is " + lessZero + "%\n");
+					}
+	
+					
+	
+					double ten = (sum1/tenPrec);
+					if (sum1 == 0){
+						showAnalysis.append("There are no entries between 0 and 10 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 0 and 10 % is " + ten + "%\n");
+					}
+	
+					
+	
+					double twenty = (sum2/twtyPrec);
+					if (sum2 == 0){
+						showAnalysis.append("There are no entries between 10 and 20 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
+					}
+	
+					double thirty = (sum3/tirtPrec);
+					if (sum3 == 0){
+						showAnalysis.append("There are no entries between 20 and 30 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 20 and 30 % is " + thirty + "%\n");
+					}
+					
+	
+					double forty = (sum4/fourtPrec);
+					if (sum4 == 0){
+						showAnalysis.append("There are no entries between 30 and 40 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
+					}
+	
+					double fifty = (sum5/fiftPrec);
+					if (sum5 == 0){
+						showAnalysis.append("There are no entries between 40 and 50 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
+					}
+	
+					double sixty = (sum6/sixPrec);
+					if (sum6 == 0){
+						showAnalysis.append("There are no entries between 50 and 60 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 50 and 60 % is " + sixty + "%\n");
+					}
+					
+	
+					double seventy = (sum7/sevenPrec);
+					if (sum7 == 0){
+						showAnalysis.append("There are no entries between 60 and 70 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 60 and 70 % is " + seventy + "%\n");
+					}
+					
+	
+					double eighty = (sum8/eightyPrec);
+					if (sum8 == 0){
+						showAnalysis.append("There are no entries between 70 and 80 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
+					}
+	
+					double ninty = (sum9/ninePrec);
+					if (sum9 == 0){
+						showAnalysis.append("There are no entries between 80 and 90 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
+					}
+	
+					double hundredMore = (sum10/above100Prec);
+					if (sum10 == 0){
+						showAnalysis.append("There are no entries between 90 and 100 %\n");
+					}
+					else {
+						showAnalysis.append("The average grade of entries between 90 and 100 % is " + hundredMore + "%\n");
+					}
+				}
+			}
+
+		});
+		
 		Button genReport = new Button(shlGradeAnalyzer, SWT.NONE);
+		genReport.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		genReport.setBounds(109, 612, 144, 37);
 		genReport.setText("Generate Report");
+		genReport.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				try
+				{
+					analytics.notifyListeners(SWT.Selection, new Event());
+					showDist.notifyListeners(SWT.Selection, new Event());
+					dispGraph.notifyListeners(SWT.Selection, new Event());
 		
-		Text dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
+					Writer fileWriter = new FileWriter("desktop\\output.txt");
+		
+					fileWriter.write(showAnalysis.getText());
+					fileWriter.write(showGraph.getText());
+		
+					fileWriter.flush();
+					fileWriter.close();
+				}
+				catch (IOException d)
+				{
+					
+				}
+				
+			}
+			
+		});
+		
+		dataDisp = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.CENTER | SWT.MULTI);
 		dataDisp.setEditable(false);
+		dataDisp.setFont(SWTResourceManager.getFont("Times New Roman", 18, SWT.BOLD));
 		dataDisp.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		dataDisp.setBounds(467, 21, 271, 325);
 		
@@ -806,15 +864,15 @@ public class WorkGUI
 					Collections.sort(entries);
 					Collections.reverse(entries);
 					
-					int row = (int) Math.ceil(entries.size() / (float) 4);
+					int row = (int) Math.ceil(entries.size() / (double) 4);
 					
-					float[][] printOut = new float[row][4];
+					double[][] printOut = new double[row][4];
 					
 					for (int u = 0; u < row; u++)
 					{
 						for (int v = 0; v < 4; v++)
 						{
-							printOut[u][v] = 0.9090909111f;
+							printOut[u][v] = 0.9090909111;
 						}
 					}
 					
@@ -835,9 +893,9 @@ public class WorkGUI
 					{
 						for (int i = 0; i < 4; i++)
 						{
-							if (printOut[j][i] != 0.9090909111f)
+							if (printOut[j][i] != 0.9090909111)
 							{
-								dataDisp.append(Float.toString(printOut[j][i]) + "     ");
+								dataDisp.append(Double.toString(printOut[j][i]) + "     ");
 							}
 							
 						}
@@ -846,8 +904,20 @@ public class WorkGUI
 				}
 			}
 		});
+		showData.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
 		showData.setBounds(523, 361, 160, 37);
 		showData.setText("Display Data");
+		
+		showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
+		showAnalysis.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 11, SWT.NORMAL));
+		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showAnalysis.setEditable(false);
+		showAnalysis.setBounds(778, 21, 294, 325);
+		
+		showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
+		showGraph.setEditable(false);
+		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showGraph.setBounds(441, 404, 652, 245);
 
 	}
 }
