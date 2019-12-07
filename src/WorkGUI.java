@@ -138,13 +138,14 @@ public class WorkGUI
 						if (entries.get(d) == erase)
 						{
 							entries.remove(d);
-							d = -1;
+							d = entries.size();
 						}
 					}
 					
 					//TODO: Only need to display error message, these logs need to go into the report string
-					trackErrors.append("The entry " + erase + " was successfully removed\n");
-					deleteData.setText("");
+					//trackErrors.append("The entry " + erase + " was successfully removed\n");
+					//TODO: This gets rid of the button text
+					//deleteData.setText("");
 				}
 				catch (NumberFormatException x)
 				{
@@ -158,12 +159,7 @@ public class WorkGUI
 		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
 		dataToKill.setBounds(138, 21, 94, 19);
 		
-		//TODO : Add the bounds using the low and high
-		//		- Both text boxes need to have something in them before proceeding
-		//		- Need to be numbers
-		//		- Delete/Update display to show only the values between the bounds (need
-		//			to find out if we delete or just only 'show' the values between low/high)
-		
+		//TODO: Need something to show the user the left box is the lower bound box, and the right is the upper bound box
 		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
 		lowBound.setBounds(251, 21, 72, 19);
 		lowBound.setText("0");
@@ -183,9 +179,21 @@ public class WorkGUI
 				if((!lowBoundText.isEmpty()) && (!highBoundText.isEmpty())) {
 					try
 					{
-						lowBoundVal = Float.parseFloat(dataToKill.getText());
+						lowBoundVal = Float.parseFloat(lowBoundText);
+						highBoundVal = Float.parseFloat(highBoundText);
 						
-						
+						if(lowBoundVal <= highBoundVal) {
+							for (int d = 0; d < entries.size(); d++)
+							{
+								if ((entries.get(d) < lowBoundVal) || (entries.get(d) > highBoundVal))
+								{
+									entries.remove(d);
+									d -= 1;
+								}
+							}
+						}
+						else
+							trackErrors.append("Boundary Values Error: Please make sure the lower boundary value is less than or equal to the upper boundary value.\n");
 					}
 					catch (NumberFormatException x)
 					{
