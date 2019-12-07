@@ -99,6 +99,10 @@ public class WorkGUI
 		shlGradeAnalyzer.setSize(1122, 737);
 		shlGradeAnalyzer.setText("Grade Analyzer");
 		
+		//Moved the text box blocks above their button blocks in the code for visual clarity
+		dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
+		dataToAdd.setBounds(20, 21, 94, 19);
+		
 		Button addData = new Button(shlGradeAnalyzer, SWT.NONE);
 		addData.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -107,10 +111,16 @@ public class WorkGUI
 				try
 				{
 					float addOn = Float.parseFloat(dataToAdd.getText());
-					entries.add(addOn);
-					dataToAdd.setText("");
+					
+					if((addOn >= lowBoundVal) && (addOn <= highBoundVal))
+						entries.add(addOn);
+					else
+						trackErrors.append("Out of Bounds Error: Data entered is NOT within the set boundaries\n");
+					
+					//TODO: Removes the text from the button...
+					//dataToAdd.setText("");
 					//TODO: Only need to display error message, these logs need to go into the report string
-					trackErrors.append("Data entered from KEYBOARD succesfully\n");
+					//trackErrors.append("Data entered from KEYBOARD succesfully\n");
 				}
 				catch (NumberFormatException g)
 				{
@@ -120,9 +130,10 @@ public class WorkGUI
 		});
 		addData.setBounds(10, 46, 117, 27);
 		addData.setText("Add Value");
-
-		dataToAdd = new Text(shlGradeAnalyzer, SWT.BORDER);
-		dataToAdd.setBounds(20, 21, 94, 19);
+		
+		//Moved the text box blocks above their button blocks in the code for visual clarity
+		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
+		dataToKill.setBounds(138, 21, 94, 19);
 		
 		deleteData = new Button(shlGradeAnalyzer, SWT.NONE);
 		deleteData.addSelectionListener(new SelectionAdapter() {
@@ -155,9 +166,6 @@ public class WorkGUI
 		});
 		deleteData.setBounds(130, 46, 112, 27);
 		deleteData.setText("Delete Value");
-		
-		dataToKill = new Text(shlGradeAnalyzer, SWT.BORDER);
-		dataToKill.setBounds(138, 21, 94, 19);
 		
 		//TODO: Need something to show the user the left box is the lower bound box, and the right is the upper bound box
 		lowBound = new Text(shlGradeAnalyzer, SWT.BORDER);
@@ -193,26 +201,26 @@ public class WorkGUI
 							}
 						}
 						else
-							trackErrors.append("Boundary Values Error: Please make sure the lower boundary value is less than or equal to the upper boundary value.\n");
+							trackErrors.append("Boundary Values Error: Please make sure the lower boundary value is less than or equal to the upper boundary value\n");
 					}
 					catch (NumberFormatException x)
 					{
-						trackErrors.append("Conversion Error: Desired boundaries must ONLY be numbers.\n");
+						trackErrors.append("Conversion Error: Desired boundaries must ONLY be numbers\n");
 					}
 				}
 				else {
 					if(lowBoundText.isEmpty())
-						trackErrors.append("Lower Bound Blank: Please enter a value for the lower bound before trying to set the boundaries.\n");
+						trackErrors.append("Lower Bound Blank: Please enter a value for the lower bound before trying to set the boundaries\n");
 					
 					if(!highBoundText.isEmpty())
-						trackErrors.append("Upper Bound Blank: Please enter a value for the upper bound before trying to set the boundaries.\n");
+						trackErrors.append("Upper Bound Blank: Please enter a value for the upper bound before trying to set the boundaries\n");
 				}
 			}
 		});
 		setBounds.setBounds(261, 46, 124, 27);
 		setBounds.setText("Set Bounds");
 		
-		// Moved this up above the loadData block (for clarity when reading)
+		//Moved the text box blocks above their button blocks in the code for visual clarity
 		fileToLoad = new Text(shlGradeAnalyzer, SWT.BORDER);
 		fileToLoad.setBounds(20, 117, 112, 19);
 		
@@ -332,16 +340,20 @@ public class WorkGUI
 					}
 					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
+						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name\n");
 					}
 				}
 				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it.\n");
+					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it\n");
 				}
 			}
 		});
 		loadData.setBounds(20, 142, 112, 27);
 		loadData.setText("Load from File");
+		
+		//Moved the text box blocks above their button blocks in the code for visual clarity
+		fileToAppend = new Text(shlGradeAnalyzer, SWT.BORDER);
+		fileToAppend.setBounds(182, 117, 141, 19);
 		
 		appendData = new Button(shlGradeAnalyzer, SWT.NONE);
 		appendData.addSelectionListener(new SelectionAdapter() {
@@ -399,19 +411,16 @@ public class WorkGUI
 					}
 					catch (ArrayIndexOutOfBoundsException missingExtension)
 					{
-						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name.\n");
+						trackErrors.append("Missing File Extension: Please make sure to include the\n.txt or .csv at the end of your file name\n");
 					}
 				}
 				else {
-					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it.\n");
+					trackErrors.append("File Name Blank: Please enter the file's name in the text box before trying to load it\n");
 				}
 			}
 		});
 		appendData.setBounds(182, 142, 141, 27);
 		appendData.setText(" Append from File");
-		
-		fileToAppend = new Text(shlGradeAnalyzer, SWT.BORDER);
-		fileToAppend.setBounds(182, 117, 141, 19);
 		
 		trackErrors = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		trackErrors.setEditable(false);
@@ -511,7 +520,6 @@ public class WorkGUI
 				}
 			}
 		});
-		
 		
 		Button dispGraph = new Button(shlGradeAnalyzer, SWT.NONE);
 		dispGraph.setFont(SWTResourceManager.getFont(".AppleSystemUIFont", 14, SWT.NORMAL));
