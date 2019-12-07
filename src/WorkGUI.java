@@ -250,7 +250,7 @@ public class WorkGUI
 		  								
 		  								for (int j = 0; j < comSplit.length; j++)
 		  								{
-		  									
+		  									//TODO: Why is this empty
 		  								}
 		  							}
 		  							else
@@ -325,7 +325,7 @@ public class WorkGUI
 		  								
 		  								for (int j = 0; j < comSplit.length; j++)
 		  								{
-		  									
+		  									//TODO: Why is this empty
 		  								}
 		  							}
 		  							else
@@ -373,7 +373,7 @@ public class WorkGUI
 		lblErrorLog.setBounds(130, 510, 82, 19);
 		lblErrorLog.setText("Error Log");
 		
-		Text showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER);
+		Text showAnalysis = new Text(shlGradeAnalyzer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
 		showAnalysis.setEditable(false);
 		showAnalysis.setBackground(SWTResourceManager.getColor(255, 228, 181));
 		showAnalysis.setBounds(778, 21, 294, 325);
@@ -390,15 +390,17 @@ public class WorkGUI
 					trackErrors.append("Analytics Error: There is no data to analyze\n");
 				}
 				else {
+					showAnalysis.setText("");
 					int numentries = entries.size();
 					Collections.sort(entries);
 					float min = entries.get(0);
 					Collections.reverse(entries);
 					float max = entries.get(0);
-					float sum = 0f;
+					float sum = 0;
 					for (int i = 0; i < entries.size(); i++){
 						sum = sum + entries.get(i);
 					}
+					//change again
 					float mean = sum/entries.size();
 					Collections.sort(entries);
 					float median;
@@ -412,50 +414,64 @@ public class WorkGUI
 						median = (entries.get(index1) + entries.get(index2))/2;
 					}
 					ArrayList<Float> mode = new ArrayList<Float>();
-					ArrayList<Integer> modeindex = new ArrayList<Integer>();
 					Collections.sort(entries);
-					for (int i = 0; i < entries.size(); i ++){
-						if (i == 0){
-							mode.add(entries.get(i));
-						}
-						else {
-							if (entries.get(i) == entries.get(i-1)){
+					
+					for (int fuh = 0; fuh < entries.size(); fuh++)
+					{
+						System.out.print(entries.get(fuh) + " ");
+					}
+					System.out.print("\n");
+					
+					for (int i = 1; i < entries.size(); i++){
+						
+							if (entries.get(i).compareTo(entries.get(i-1)) == 0){
 								mode.add(entries.get(i));
 							}
-						}
+						
 					}
-					if (mode.size() > 1){
+					System.out.println("List Size: " + mode.size());
+					ArrayList<Integer> modeindex = new ArrayList<Integer>();
+					if (mode.size() > 0){
 						int[] modecount = new int[mode.size()]; 
 						for (int i = 0; i < mode.size(); i++){
 							for (int j = 0; j < entries.size(); j++){
-								if (mode.get(i) == entries.get(j)){
+								if (mode.get(i).compareTo(entries.get(j)) == 0){
 									modecount[i] = modecount[i] + 1;
 								}
 							}
 						}
 						int maxmode = 0;
 						for(int i = 0; i < modecount.length; i++){
-							if (i == 0){
-								maxmode = modecount[i];
-								modeindex.add(i);
-							}
-							else{
+							
 								if (modecount[i] >= maxmode){
 									maxmode = modecount[i];
 									modeindex.add(i);
 								}
-							}
+							
 						}
+						//commit comment
 
 					}
-					if(mode.size() > 1){
-						showAnalysis.append("\n Median(s): ");
-						for (int i = 0; i < modeindex.size(); i ++){
-							showAnalysis.append("\n" + mode.get(modeindex.get(i)));
+					ArrayList<Float> printmode = new ArrayList<Float>();
+					for (int i = 0; i < modeindex.size(); i++) {
+						boolean found = false;
+						for (int j = 0; j < printmode.size(); j ++) {
+							if (mode.get(modeindex.get(i)).compareTo(printmode.get(j)) == 0) {
+								found = true;
+							}
+						}
+						if (found == false) {
+							printmode.add(mode.get(modeindex.get(i)));
+						}
+					}
+					if(printmode.size() > 0){
+						showAnalysis.append("\n Mode(s): ");
+						for (int i = 0; i < printmode.size(); i ++){
+							showAnalysis.append("\n" + printmode.get(i));
 						}
 					}
 					else{
-						showAnalysis.append("\n No entries repeat, every entry is the median.");
+						showAnalysis.append("\n No entries repeat, every entry is the mode.");
 					}
 					showAnalysis.append("\n Number of Entries: " + numentries);
 					showAnalysis.append("\n Low: " + min);
@@ -579,30 +595,30 @@ public class WorkGUI
 			public void widgetSelected(SelectionEvent e) 
 			{
 
-				double total = entries.size();
+				float total = entries.size();
 
-				double less0Prec = 0;
-				double sum0 = 0;
-				double tenPrec = 0;
-				double sum1 = 0;
-				double twtyPrec = 0;
-				double sum2 = 0;
-				double tirtPrec = 0;
-				double sum3 = 0;
-				double fourtPrec = 0;
-				double sum4 = 0;
-				double fiftPrec = 0;
-				double sum5 = 0;
-				double sixPrec = 0;
-				double sum6 = 0;
-				double sevenPrec = 0;
-				double sum7 = 0;
-				double eightyPrec = 0;
-				double sum8 = 0;
-				double ninePrec = 0;
-				double sum9 = 0;
-				double above100Prec = 0;
-				double sum10 = 0;
+				float less0Prec = 0;
+				float sum0 = 0;
+				float tenPrec = 0;
+				float sum1 = 0;
+				float twtyPrec = 0;
+				float sum2 = 0;
+				float tirtPrec = 0;
+				float sum3 = 0;
+				float fourtPrec = 0;
+				float sum4 = 0;
+				float fiftPrec = 0;
+				float sum5 = 0;
+				float sixPrec = 0;
+				float sum6 = 0;
+				float sevenPrec = 0;
+				float sum7 = 0;
+				float eightyPrec = 0;
+				float sum8 = 0;
+				float ninePrec = 0;
+				float sum9 = 0;
+				float above100Prec = 0;
+				float sum10 = 0;
 				if (entries.isEmpty())
 
 				{
@@ -658,7 +674,7 @@ public class WorkGUI
 				}
 			}
 
-				double lessZero = (sum0/less0Prec);
+				float lessZero = (sum0/less0Prec);
 				if (sum0 == 0){
 					showAnalysis.append("There are no entries less than 0 %\n");
 				}
@@ -668,7 +684,7 @@ public class WorkGUI
 
 				
 
-				double ten = (sum1/tenPrec);
+				float ten = (sum1/tenPrec);
 				if (sum1 == 0){
 					showAnalysis.append("There are no entries between 0 and 10 %\n");
 				}
@@ -678,7 +694,7 @@ public class WorkGUI
 
 				
 
-				double twenty = (sum2/twtyPrec);
+				float twenty = (sum2/twtyPrec);
 				if (sum2 == 0){
 					showAnalysis.append("There are no entries between 10 and 20 %\n");
 				}
@@ -686,7 +702,7 @@ public class WorkGUI
 					showAnalysis.append("The average grade of entries between 10 and 20 % is " + twenty + "%\n");
 				}
 
-				double thirty = (sum3/tirtPrec);
+				float thirty = (sum3/tirtPrec);
 				if (sum3 == 0){
 					showAnalysis.append("There are no entries between 20 and 30 %\n");
 				}
@@ -695,7 +711,7 @@ public class WorkGUI
 				}
 				
 
-				double forty = (sum4/fourtPrec);
+				float forty = (sum4/fourtPrec);
 				if (sum4 == 0){
 					showAnalysis.append("There are no entries between 30 and 40 %\n");
 				}
@@ -703,7 +719,7 @@ public class WorkGUI
 					showAnalysis.append("The average grade of entries between 30 and 40 % is " + forty + "%\n");
 				}
 
-				double fifty = (sum5/fiftPrec);
+				float fifty = (sum5/fiftPrec);
 				if (sum5 == 0){
 					showAnalysis.append("There are no entries between 40 and 50 %\n");
 				}
@@ -711,7 +727,7 @@ public class WorkGUI
 					showAnalysis.append("The average grade of entries between 40 and 50 % is " + fifty + "%\n");
 				}
 
-				double sixty = (sum6/sixPrec);
+				float sixty = (sum6/sixPrec);
 				if (sum6 == 0){
 					showAnalysis.append("There are no entries between 50 and 60 %\n");
 				}
@@ -720,7 +736,7 @@ public class WorkGUI
 				}
 				
 
-				double seventy = (sum7/sevenPrec);
+				float seventy = (sum7/sevenPrec);
 				if (sum7 == 0){
 					showAnalysis.append("There are no entries between 60 and 70 %\n");
 				}
@@ -729,7 +745,7 @@ public class WorkGUI
 				}
 				
 
-				double eighty = (sum8/eightyPrec);
+				float eighty = (sum8/eightyPrec);
 				if (sum8 == 0){
 					showAnalysis.append("There are no entries between 70 and 80 %\n");
 				}
@@ -737,7 +753,7 @@ public class WorkGUI
 					showAnalysis.append("The average grade of entries between 70 and 80 % is " + eighty + "%\n");
 				}
 
-				double ninty = (sum9/ninePrec);
+				float ninty = (sum9/ninePrec);
 				if (sum9 == 0){
 					showAnalysis.append("There are no entries between 80 and 90 %\n");
 				}
@@ -745,7 +761,7 @@ public class WorkGUI
 					showAnalysis.append("The average grade of entries between 80 and 90 % is " + ninty + "%\n");
 				}
 
-				double hundredMore = (sum10/above100Prec);
+				float hundredMore = (sum10/above100Prec);
 				if (sum10 == 0){
 					showAnalysis.append("There are no entries between 90 and 100 %\n");
 				}
@@ -820,13 +836,13 @@ public class WorkGUI
 				}
 			}
 		});
-		showData.setBounds(535, 361, 160, 37);
+		showData.setBounds(523, 361, 160, 37);
 		showData.setText("Display Data");
 		
-		Text text = new Text(shlGradeAnalyzer, SWT.BORDER);
-		text.setEditable(false);	
-		text.setBackground(SWTResourceManager.getColor(255, 228, 181));
-		text.setBounds(441, 404, 652, 245);
+		Text showGraph = new Text(shlGradeAnalyzer, SWT.BORDER);
+		showGraph.setEditable(false);
+		showGraph.setBackground(SWTResourceManager.getColor(255, 228, 181));
+		showGraph.setBounds(441, 404, 652, 245);
 
 	}
 }
